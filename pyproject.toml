@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "ai-lakatos"
+version = "0.1.0"
+description = "A multi-agent AI mathematician based on Lakatos' method of proofs and refutations"
+authors = ["daattavya98 <da579@cam.ac.uk>, Oisin Kim <osmk3@cam.ac.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
