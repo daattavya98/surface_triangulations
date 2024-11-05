@@ -1,0 +1,3 @@
+Complexity,Loss,Equation
+2,0.0003290761,"neg(-0.01814045)"
+3,0.0,"logical_and(-0.36986458, x0)"
