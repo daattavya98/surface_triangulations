@@ -37,7 +37,7 @@ class sympy_p(sp.Function):
     pass
 
 
-loss = jl.seval("""SignumLoss()""")
+loss = jl.seval("""SignumLoss([(1, 1), (2, 1), (2, 2)])""")
 primes = {i: jl.p(i*1.0) for i in range(1, 999)}
 
 X = np.random.randint(0, 100, 100)[:, None]
@@ -64,3 +64,4 @@ model = PySRRegressor(
 
 model.fit(X, y)
 print(model.get_best().equation)
+# print(model.get_best().to_latex())
