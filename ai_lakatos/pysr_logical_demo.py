@@ -1,6 +1,5 @@
 import numpy as np
 from pysr import PySRRegressor, jl
-from julia_snippets.signum_loss import signum_loss
 import sympy as sp
 # from pathlib import Path
 
@@ -29,12 +28,16 @@ function p(i::T) where T
 end
 """)
 
+# Load the signum_loss object from the julia_snippets.signum_loss module
+jl.include("ai_lakatos/julia_snippets/signum_loss.jl")
+# signum_loss = a.signum_loss
+
 
 class sympy_p(sp.Function):
     pass
 
 
-loss = signum_loss
+loss = jl.seval("""SignumLoss()""")
 primes = {i: jl.p(i*1.0) for i in range(1, 999)}
 
 X = np.random.randint(0, 100, 100)[:, None]

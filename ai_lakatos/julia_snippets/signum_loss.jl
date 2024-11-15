@@ -1,4 +1,8 @@
-signum_loss = """
+using DynamicExpressions
+using LossFunctions
+using Statistics
+using SymbolicRegression: Dataset
+
 struct SignumLoss <: Function
   requiredOps::AbstractVector{Tuple{Integer,Integer}}
   complexityWeight::Real
@@ -47,4 +51,3 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
   signumLoss = mean(y_pred .> y) + 1 / complexity * loss.complexityWeight
   return L(signumLoss)
 end
-"""
