@@ -7,7 +7,6 @@ This guide will walk you through installing **Homebrew** (a package manager for 
 ## **Prerequisites**
 
 1. Ensure you have macOS installed and updated.
-2. You will need **Command Line Tools for Xcode**. If not already installed, they will be installed automatically during the process.
 
 ---
 
