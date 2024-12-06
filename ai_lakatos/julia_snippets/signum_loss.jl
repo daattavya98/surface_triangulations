@@ -11,7 +11,7 @@ struct SignumLoss <: Function
   # tightnessLengthScale::Real
 end
 
-function SignumLoss(requiredOps=[(1, 2), (2, 3), (2, 4)]; complexityWeight=1.0, unusedFunctionPenalty=1e5)
+function SignumLoss(requiredOps=[(1, 2), (2, 3), (2, 4)]; complexityWeight=0.5, unusedFunctionPenalty=1e1)
   return SignumLoss(requiredOps, complexityWeight, unusedFunctionPenalty)
 end
 

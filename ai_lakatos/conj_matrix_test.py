@@ -1,36 +1,27 @@
 import numpy as np
-import sympy as sp
 from pysr import PySRRegressor, jl
 
-# from pathlib import Path
-
-jl.seval("import Primes")
+# Julia imports
 jl.seval(
     """
-function p(i::T) where T
-    if (0.5 < i < 1000)
-        return T(Primes.prime(round(Int, i)))
-    else
-        return T(NaN)
-    end
-end
+    import Pkg
+    Pkg.add("LinearAlgebra")
+    Pkg.add("DynamicExpressions")
+    Pkg.add("LossFunctions")
+    Pkg.add("Statistics")
+    using LinearAlgebra
 """
 )
 
 # Load the signum_loss object from the julia_snippets.signum_loss module
 jl.include("ai_lakatos/julia_snippets/signum_loss.jl")
-# signum_loss = a.signum_loss
 
+loss = jl.seval("""SignumLoss([(2, 2), (2, 3)])""")
 
-class sympy_p(sp.Function):
-    pass
+# Prepare x and y data
 
-
-loss = jl.seval("""SignumLoss([(1, 1), (2, 1), (2, 2)])""")
-primes = {i: jl.p(i * 1.0) for i in range(1, 999)}
-
-X = np.random.randint(0, 100, 100)[:, None]
-y = [primes[3 * X[i, 0] + 1] - 5 for i in range(100)]
+X = np.load("data_gen/random_matrices.npy")
+y = np.zeros(X.shape[0])
 
 
 model = PySRRegressor(
@@ -39,18 +30,21 @@ model = PySRRegressor(
     ncycles_per_iteration=1000,
     binary_operators=["+", "*", "logical_or", "logical_and"],
     unary_operators=[
+        "LinearAlgebra.rank",
         "exp",
         "neg",
-        "p",
         # ^ Custom operator (julia syntax)
     ],
-    extra_sympy_mappings={"p": sympy_p},
     # ^ Define operator for SymPy as well
     # elementwise_loss="loss(prediction, target) = (prediction - target)^2",
     # ^ Custom loss function (julia syntax)
     loss_function=loss,
+    allow_nd_input=False,
+    constraints={"logical_or": (3, 3), "logical_and": (3, 3), "neg": 3},
 )
 
 model.fit(X, y)
 print(model.get_best().equation)
+
+
 # print(model.get_best().to_latex())
