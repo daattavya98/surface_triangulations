@@ -559,6 +559,10 @@ def generate_genus_1_triangulations(
     return points, tri, adj_matrix, quotiented_adj_matrix
 
 
+def adj_to_incidence_matrices() -> None:
+    pass
+
+
 @beartype
 def main() -> None:
     """
@@ -582,13 +586,10 @@ def main() -> None:
         adj_matrix,
         adj_matrix_second_square,
         quotiented_adj_matrix,
-    ) = generate_genus_0_triangulations(
+    ) = generate_genus_1_triangulations(
         n_cycle_1=n_cycle_1,
         n_cycle_2=n_cycle_2,
-        n_interior=n_interior,
-        n_cycle_3=n_cycle_3,
-        n_cycle_4=n_cycle_4,
-        n_second_square_interior=n_interior_second_square,
+        n_interior=n_interior
     )
 
     print(f"Sampled points: {points_square1}, {points_square2}")
@@ -617,3 +618,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
