@@ -6,9 +6,6 @@ jl.seval(
     """
     import Pkg
     Pkg.add("LinearAlgebra")
-    Pkg.add("DynamicExpressions")
-    Pkg.add("LossFunctions")
-    Pkg.add("Statistics")
     using LinearAlgebra
 """
 )
@@ -20,9 +17,12 @@ loss = jl.seval("""SignumLoss([(2, 2), (2, 3)])""")
 
 # Prepare x and y data
 
-X = np.load("data_gen/random_matrices.npy")
-y = np.zeros(X.shape[0])
+# X = np.load("data_gen/random_matrices.npy")
 
+# Prepare X data
+X = np.random.rand(100, 2)
+
+y = np.zeros(X.shape[0])
 
 model = PySRRegressor(
     populations=32,
@@ -39,12 +39,8 @@ model = PySRRegressor(
     # elementwise_loss="loss(prediction, target) = (prediction - target)^2",
     # ^ Custom loss function (julia syntax)
     loss_function=loss,
-    allow_nd_input=False,
     constraints={"logical_or": (3, 3), "logical_and": (3, 3), "neg": 3},
 )
 
 model.fit(X, y)
 print(model.get_best().equation)
-
-
-# print(model.get_best().to_latex())
