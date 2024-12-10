@@ -14,11 +14,13 @@ This guide will walk you through installing **Homebrew** (a package manager for 
 
 **Homebrew** simplifies software installation on macOS. Follow these steps to install Homebrew:
 
-1. **Open Terminal**:  
+1. **Open Terminal**:
    Press `Command + Space`, type `Terminal`, and press `Enter`.
 
-2. **Run the Homebrew installation script**:  
+2. **Run the Homebrew installation script**:
    Paste the following command in the terminal and press `Enter`:
 
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+### Note: Update PySR source to {git = "https://github.com/daattavya98/PySR", develop = true} in pyproject.toml if needed. Exploring pysr for the moment to see if the original works.
