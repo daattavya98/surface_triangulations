@@ -1,8 +1,8 @@
 from typing import Tuple
-!pip install beartype
-!pip install scipy.spatial
+
 import matplotlib.pyplot as plt
 import numpy as np
+import toponetx as tnx
 from beartype import beartype
 from scipy.spatial import Delaunay
 
@@ -317,13 +317,72 @@ def generate_genus_1_triangulations(
     return points, tri, adj_matrix, quotiented_adj_matrix
 
 
+# Construct correct simplicial complex
+@beartype
+def construct_simplicial_complex(
+    quotiented_adj_matrix: np.ndarray,
+    simplices: np.ndarray,
+    n_cycle_1: int,
+    n_cycle_2: int,
+    n_interior: int,
+) -> tnx.SimplicialComplex:
+    """
+    Construct a simplicial complex from a quotiented adjacency matrix that respects the original Delaunay triangulation.
+
+    Parameters
+    ----------
+    quotiented_adj_matrix : np.ndarray
+        The inputted quotiented adjacency matrix.
+    triangulation : Delaunay
+        The original Delaunay triangulation.
+
+    Returns
+    -------
+    tnx.SimplicialComplex
+        The constructed simplicial complex.
+    """
+
+    # one_simplex = []
+    # for i in range(quotiented_adj_matrix.shape[0]):
+    #     for j in range(quotiented_adj_matrix.shape[1]):
+    #         if quotiented_adj_matrix[i, j] == 1:
+    #             if (i, j) not in one_simplex and (j, i) not in one_simplex:
+    #                 one_simplex.append((i, j))
+    # one_simplex = list(set(one_simplex))
+    # one_simplex = np.array(one_simplex)
+
+    two_simplex = []
+    tri_list = []
+
+    for triangle in simplices:
+        for el in triangle:
+            if el in [1, 2, 3]:
+                triangle[triangle == el] = 0
+            for i in range(4 + n_cycle_1, 4 + 2 * n_cycle_1):
+                if el == i:
+                    triangle[triangle == el] = i - n_cycle_1
+            for i in range(
+                4 + 2 * n_cycle_1 + n_cycle_2, 4 + 2 * n_cycle_1 + 2 * n_cycle_2
+            ):
+                if el == i:
+                    triangle[triangle == el] = i - n_cycle_2
+        tri_list.append(triangle)
+
+    tri_list = list(set(tuple(triangle) for triangle in tri_list))
+
+    two_simplex = np.array(tri_list)
+
+    sc = tnx.SimplicialComplex(two_simplex)
+    return sc
+
+
 @beartype
 def main() -> None:
     """
     The main function
     """
 
-    n_cycle_1, n_cycle_2, n_interior = 2, 2, 2
+    n_cycle_1, n_cycle_2, n_interior = 3, 3, 4
 
     points, tri, adj_matrix, quotiented_adj_matrix = generate_genus_1_triangulations(
         n_cycle_1=n_cycle_1, n_cycle_2=n_cycle_2, n_interior=n_interior
@@ -332,6 +391,17 @@ def main() -> None:
     print(f"Sampled points: {points}")
     print(f"Adjacency matrix: {adj_matrix}")
     print(f"Quotiented adjacency matrix: {quotiented_adj_matrix}")
+
+    # Construct simplicial complex
+    sc = construct_simplicial_complex(
+        quotiented_adj_matrix.copy(),
+        tri.simplices.copy(),
+        n_cycle_1,
+        n_cycle_2,
+        n_interior,
+    )
+    print(f"Vertex-Edge Matrix: {sc.incidence_matrix(1).todense()}")
+    print(f"Edge-Face Matrix: {sc.incidence_matrix(2).todense()}")
 
     # Plot the triangulation
     plt.triplot(points[:, 0], points[:, 1], tri.simplices)
