@@ -549,11 +549,19 @@ def generate_genus_1_triangulations(
     tri = Delaunay(points)
 
     adj_matrix = triangulation_to_adjacency(tri, len(points))
+    # quotiented_adj_matrix = adjacency_to_quotiented_adjacency(
+    #     n_cycle_1=n_cycle_1,
+    #     n_cycle_2=n_cycle_2,
+    #     n_interior=n_interior,
+    #     adj_matrix=adj_matrix.copy(),
+    # )
     quotiented_adj_matrix = adjacency_to_quotiented_adjacency_column_addition(
+        adj_matrix=adj_matrix.copy(),
         n_cycle_1=n_cycle_1,
         n_cycle_2=n_cycle_2,
         n_interior=n_interior,
-        adj_matrix=adj_matrix.copy(),
+        genus_0_tri=False,
+        genus_1_tri=True,
     )
 
     return points, tri, adj_matrix, quotiented_adj_matrix
@@ -569,54 +577,65 @@ def main() -> None:
     The main function
     """
 
-    n_cycle_1, n_cycle_2, n_cycle_3, n_cycle_4, n_interior, n_interior_second_square = (
-        2,
-        2,
-        2,
-        2,
-        2,
+    n_cycle_1, n_cycle_2, n_interior = (
+        1,
+        1,
         1,
     )
 
-    (
-        points_square1,
-        points_square2,
-        tri1,
-        tri2,
-        adj_matrix,
-        adj_matrix_second_square,
-        quotiented_adj_matrix,
-    ) = generate_genus_1_triangulations(
-        n_cycle_1=n_cycle_1,
-        n_cycle_2=n_cycle_2,
-        n_interior=n_interior
+    # (
+    #     points_square1,
+    #     points_square2,
+    #     tri1,
+    #     tri2,
+    #     adj_matrix,
+    #     adj_matrix_second_square,
+    #     quotiented_adj_matrix,
+    # ) = generate_genus_0_triangulations(
+    #     n_cycle_1=n_cycle_1,
+    #     n_cycle_2=n_cycle_2,
+    #     n_cycle_3=n_cycle_3,
+    #     n_cycle_4=n_cycle_4,
+    #     n_interior=n_interior,
+    #     n_second_square_interior=n_second_square_interior,
+    # )
+
+    points_square1, tri1, adj_matrix, quotiented_adj_matrix = (
+        generate_genus_1_triangulations(
+            n_cycle_1=n_cycle_1, n_cycle_2=n_cycle_2, n_interior=n_interior
+        )
     )
 
-    print(f"Sampled points: {points_square1}, {points_square2}")
-    print(f"Adjacency matrix: {adj_matrix}, {adj_matrix_second_square}")
+    # print(f"Sampled points: {points_square1}, {points_square2}")
+    # print(f"Adjacency matrix: {adj_matrix}, {adj_matrix_second_square}")
+    # print(f"Quotiented adjacency matrix: {quotiented_adj_matrix}")
+    print(f"Sampled points: {points_square1}")
+    print(f"Adjacency matrix: {adj_matrix}")
     print(f"Quotiented adjacency matrix: {quotiented_adj_matrix}")
 
-    # Create a figure with two subplots
-    fig, axs = plt.subplots(1, 2)
+    # # Create a figure with two subplots
+    # fig, axs = plt.subplots(1, 2)
 
-    # Plot the first triangulation in the first subplot
-    axs[0].triplot(points_square1[:, 0], points_square1[:, 1], tri1.simplices)
-    axs[0].plot(points_square1[:, 0], points_square1[:, 1], "o")
-    axs[0].set_title("Triangulation 1")
+    # # Plot the first triangulation in the first subplot
+    # axs[0].triplot(points_square1[:, 0], points_square1[:, 1], tri1.simplices)
+    # axs[0].plot(points_square1[:, 0], points_square1[:, 1], "o")
+    # axs[0].set_title("Triangulation 1")
 
-    # Plot the second triangulation in the second subplot
-    axs[1].triplot(points_square2[:, 0], points_square2[:, 1], tri2.simplices)
-    axs[1].plot(points_square2[:, 0], points_square2[:, 1], "o")
-    axs[1].set_title("Triangulation 2")
+    # # Plot the second triangulation in the second subplot
+    # axs[1].triplot(points_square2[:, 0], points_square2[:, 1], tri2.simplices)
+    # axs[1].plot(points_square2[:, 0], points_square2[:, 1], "o")
+    # axs[1].set_title("Triangulation 2")
 
-    # Adjust the spacing between subplots
-    plt.tight_layout()
+    # # Adjust the spacing between subplots
+    # plt.tight_layout()
 
-    # Show the figure
+    # Plot the genus 1 triangulation
+    plt.figure()
+    plt.triplot(points_square1[:, 0], points_square1[:, 1], tri1.simplices)
+    plt.plot(points_square1[:, 0], points_square1[:, 1], "o")
+    plt.title("Genus 1 Triangulation")
     plt.show()
 
 
 if __name__ == "__main__":
     main()
-
-
