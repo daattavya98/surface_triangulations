@@ -1,10 +1,13 @@
 from typing import List, Tuple
 
+import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 from beartype import beartype
 from scipy.spatial import Delaunay
-
+from toponetx.classes import SimplicialComplex
+from toponetx.transform import graph_to_clique_complex
+from numpy.linalg import matrix_rank
 
 @beartype
 def triangulation_to_adjacency(
@@ -441,6 +444,19 @@ def sample_random_vertices(
             ),
         ]
 
+# Generate the clique complex from graph adjacency matrix
+@beartype
+def adj_to_simplicial(adj_matrix: np.ndarray) -> SimplicialComplex:
+    graph = nx.from_numpy_array(adj_matrix)
+    return graph_to_clique_complex(graph, 2)
+
+# Generate the incidence matrices from graph adjacency matrix
+@beartype
+def adj_to_incidence(adj_matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    sc = adj_to_simplicial(adj_matrix)
+    d_1 = sc.incidence_matrix(rank=1).todense()
+    d_2 = sc.incidence_matrix(rank=2).todense()
+    return (d_1, d_2)
 
 # Generate genus 0 triangulations
 @beartype
@@ -517,14 +533,13 @@ def generate_genus_0_triangulations(
         quotiented_adj_matrix,
     )
 
-
 # Generate genus 1 triangulations
 @beartype
 def generate_genus_1_triangulations(
     n_cycle_1: int,
     n_cycle_2: int,
     n_interior: int,
-) -> Tuple[np.ndarray, Delaunay, np.ndarray, np.ndarray]:
+) -> Tuple[np.ndarray, Delaunay, np.ndarray, np.ndarray, SimplicialComplex, np.ndarray, np.ndarray]:
     """
     Generate genus 1 triangulations
 
@@ -540,7 +555,7 @@ def generate_genus_1_triangulations(
     Returns
     -------
     Tuple[np.ndarray, Delaunay, np.ndarray, np.ndarray]
-        The generated points, triangulation, adjacency matrix, and quotiented adjacency
+        The generated points, triangulation, adjacency matrix, quotiented adjacency, simplicial complex, incidence matrices
     """
 
     points = sample_random_vertices(
@@ -552,16 +567,13 @@ def generate_genus_1_triangulations(
     quotiented_adj_matrix = adjacency_to_quotiented_adjacency_column_addition(
         n_cycle_1=n_cycle_1,
         n_cycle_2=n_cycle_2,
-        n_interior=n_interior,
         adj_matrix=adj_matrix.copy(),
     )
+    simplicial = adj_to_simplicial(quotiented_adj_matrix)
+    d1 = adj_to_incidence(quotiented_adj_matrix)[0]
+    d2 = adj_to_incidence(quotiented_adj_matrix)[1]
 
-    return points, tri, adj_matrix, quotiented_adj_matrix
-
-
-def adj_to_incidence_matrices() -> None:
-    pass
-
+    return points, tri, adj_matrix, quotiented_adj_matrix, simplicial, d1, d2
 
 @beartype
 def main() -> None:
@@ -569,48 +581,52 @@ def main() -> None:
     The main function
     """
 
-    n_cycle_1, n_cycle_2, n_cycle_3, n_cycle_4, n_interior, n_interior_second_square = (
-        2,
-        2,
-        2,
-        2,
-        2,
-        1,
+    n_cycle_1, n_cycle_2, n_interior = (
+        5,
+        5,
+        20,
     )
 
     (
-        points_square1,
-        points_square2,
-        tri1,
-        tri2,
+        points_square,
+        tri,
         adj_matrix,
-        adj_matrix_second_square,
         quotiented_adj_matrix,
+        simplices,
+        d1,
+        d2
     ) = generate_genus_1_triangulations(
         n_cycle_1=n_cycle_1,
         n_cycle_2=n_cycle_2,
         n_interior=n_interior
     )
 
-    print(f"Sampled points: {points_square1}, {points_square2}")
-    print(f"Adjacency matrix: {adj_matrix}, {adj_matrix_second_square}")
+    # Compute first homology
+    null_d1 = np.shape(d1)[1] - matrix_rank(d1)
+    h1 = null_d1-matrix_rank(d2)
+
+    # Compute signed adjacency matrix from simplicial complex data
+    signed_adj = simplices.adjacency_matrix(0, True).toarray()
+    
+    """
+    print(f"Sampled points: {points_square}")
+    print(f"Adjacency matrix: {adj_matrix}")
+    """
     print(f"Quotiented adjacency matrix: {quotiented_adj_matrix}")
 
-    # Create a figure with two subplots
-    fig, axs = plt.subplots(1, 2)
 
-    # Plot the first triangulation in the first subplot
-    axs[0].triplot(points_square1[:, 0], points_square1[:, 1], tri1.simplices)
-    axs[0].plot(points_square1[:, 0], points_square1[:, 1], "o")
-    axs[0].set_title("Triangulation 1")
+    print(f"Signed adjacency matrix: {signed_adj}")
+    print(f"D1 map: {d1}")
+    print(f"D2 map: {d2}")
+    print(f"First homology: {h1}")
 
-    # Plot the second triangulation in the second subplot
-    axs[1].triplot(points_square2[:, 0], points_square2[:, 1], tri2.simplices)
-    axs[1].plot(points_square2[:, 0], points_square2[:, 1], "o")
-    axs[1].set_title("Triangulation 2")
+    # Create a figure 
+    plt.figure()
 
-    # Adjust the spacing between subplots
-    plt.tight_layout()
+    # Plot the triangulation
+    plt.triplot(points_square[:, 0], points_square[:, 1], tri.simplices)
+    plt.plot(points_square[:, 0], points_square[:, 1], "o")
+    plt.title("Triangulation")
 
     # Show the figure
     plt.show()
