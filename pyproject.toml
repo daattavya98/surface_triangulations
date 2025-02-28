@@ -20,6 +20,7 @@ black = "^24.10.0"
 isort = "^5.13.2"
 pysr = "^1.0.0"
 toponetx = "^0.1.1"
+networkx = "^3.4.2"
 
 
 [build-system]
