@@ -8,7 +8,6 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10, <3.12"
-pysr = "^0.19.4"
 sympy = "^1.13.3"
 scipy = "<1.14.1"
 matplotlib = "<3.9.2"
@@ -19,6 +18,10 @@ pettingzoo = "^1.24.3"
 beartype = "^0.19.0"
 black = "^24.10.0"
 isort = "^5.13.2"
+pysr = "^1.0.0"
+toponetx = "^0.1.1"
+networkx = "^3.4.2"
+pandas = "^2.2.3"
 
 
 [build-system]
