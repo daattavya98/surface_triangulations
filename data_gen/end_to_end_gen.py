@@ -518,7 +518,8 @@ def generate_genus_1_datapoints(
         i += 1
 
     # # Filter out None values
-    # filtered_rows = [row for row in genus_1_datapoints if row is not None and row[0] is not None and row[1] is not None]
+    # filtered_rows = [row for row in genus_1_datapoints if row is not None and row[0] is not None and row[1] is \
+    # not None]
     # genus_1_datapoints = np.array(filtered_rows, dtype=object)
 
     genus_1_datapoints = np.array(genus_1_datapoints, dtype=object)
