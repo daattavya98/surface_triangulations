@@ -131,3 +131,6 @@ cython_debug/
 
 # Ignore VSCode settings
 .vscode/
+
+data_gen/random_matrices.npy
+data_gen/random_odd_even.npy
