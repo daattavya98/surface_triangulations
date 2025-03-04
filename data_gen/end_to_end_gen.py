@@ -173,7 +173,13 @@ def adjacency_to_quotiented_adjacency(
 
 
 def sample_random_vertices(
-    n_cycle_1: int, n_cycle_2: int, n_interior: int
+    n_cycle_1: int,
+    n_cycle_2: int,
+    n_interior: int,
+    genus: int = 1,
+    n_second_square_interior: None | int = 0,
+    n_cycle_3: None | int = 0,
+    n_cycle_4: None | int = 0,
 ) -> np.ndarray:
     """
     This function samples random vertices from a uniform distribution over a square
@@ -196,39 +202,102 @@ def sample_random_vertices(
     # Square vertices
     default_vertices = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
 
-    # Generate vertices
-    left_right_vertices = np.random.rand(n_cycle_1)
+    if genus == 1:
 
-    cycle_1_left = np.zeros((n_cycle_1, 2))
-    cycle_1_left[:, 1] = left_right_vertices
-    cycle_1_left = np.sort(cycle_1_left, axis=0)
-    cycle_1_right = np.zeros((n_cycle_1, 2))
-    cycle_1_right[:, 0] = 1
-    cycle_1_right[:, 1] = left_right_vertices
-    cycle_1_right = np.sort(cycle_1_right, axis=0)
+        # Generate vertices
+        left_right_vertices = np.random.rand(n_cycle_1)
 
-    top_bottom_vertices = np.random.rand(n_cycle_2)
+        cycle_1_left = np.zeros((n_cycle_1, 2))
+        cycle_1_left[:, 1] = left_right_vertices
+        cycle_1_left = np.sort(cycle_1_left, axis=0)
+        cycle_1_right = np.zeros((n_cycle_1, 2))
+        cycle_1_right[:, 0] = 1
+        cycle_1_right[:, 1] = left_right_vertices
+        cycle_1_right = np.sort(cycle_1_right, axis=0)
 
-    cycle_2_bot = np.zeros((n_cycle_2, 2))
-    cycle_2_top = np.zeros((n_cycle_2, 2))
-    cycle_2_bot[:, 0] = top_bottom_vertices
-    cycle_2_top[:, 0] = top_bottom_vertices
-    cycle_2_top[:, 1] = 1
-    cycle_2_top = np.sort(cycle_2_top, axis=0)
-    cycle_2_bot = np.sort(cycle_2_bot, axis=0)
+        top_bottom_vertices = np.random.rand(n_cycle_2)
 
-    interior = np.random.rand(n_interior, 2)
+        cycle_2_bot = np.zeros((n_cycle_2, 2))
+        cycle_2_top = np.zeros((n_cycle_2, 2))
+        cycle_2_bot[:, 0] = top_bottom_vertices
+        cycle_2_top[:, 0] = top_bottom_vertices
+        cycle_2_top[:, 1] = 1
+        cycle_2_top = np.sort(cycle_2_top, axis=0)
+        cycle_2_bot = np.sort(cycle_2_bot, axis=0)
 
-    return np.concatenate(
-        [
-            default_vertices,
-            cycle_1_left,
-            cycle_1_right,
-            cycle_2_bot,
-            cycle_2_top,
-            interior,
+        interior = np.random.rand(n_interior, 2)
+
+        return np.concatenate(
+            [
+                default_vertices,
+                cycle_1_left,
+                cycle_1_right,
+                cycle_2_bot,
+                cycle_2_top,
+                interior,
+            ]
+        )
+
+    elif genus == 0:
+
+        # Sample interior vertices
+        n_interior = np.random.rand(n_interior, 2)
+        n_second_square_interior = np.random.rand(n_second_square_interior, 2)
+
+        # Generate vertices
+        left_edge_square_1_left_edge_square_2 = np.random.rand(n_cycle_1)
+        right_edge_square_1_right_edge_square_2 = np.random.rand(n_cycle_2)
+        top_edge_square_1_top_edge_square_2 = np.random.rand(n_cycle_3)
+        bottom_edge_square_1_bottom_edge_square_2 = np.random.rand(n_cycle_4)
+
+        # Join left edge of square 1 to left edge of square 2
+        left_edge_square_1_vertices = np.zeros((n_cycle_1, 2))
+        left_edge_square_1_vertices[:, 1] = left_edge_square_1_left_edge_square_2
+        left_edge_square_1_vertices = np.sort(left_edge_square_1_vertices, axis=0)
+        left_edge_square_2_vertices = left_edge_square_1_vertices
+
+        # Join right edge of square 1 to right edge of square 2
+        right_edge_square_1_vertices = np.zeros((n_cycle_2, 2))
+        right_edge_square_1_vertices[:, 0] = 1
+        right_edge_square_1_vertices[:, 1] = right_edge_square_1_right_edge_square_2
+        right_edge_square_1_vertices = np.sort(right_edge_square_1_vertices, axis=0)
+        right_edge_square_2_vertices = right_edge_square_1_vertices
+
+        # Join top edge of square 1 to top edge of square 2
+        top_edge_square_1_vertices = np.zeros((n_cycle_3, 2))
+        top_edge_square_1_vertices[:, 0] = top_edge_square_1_top_edge_square_2
+        top_edge_square_1_vertices[:, 1] = 1
+        top_edge_square_1_vertices = np.sort(top_edge_square_1_vertices, axis=0)
+        top_edge_square_2_vertices = top_edge_square_1_vertices
+
+        # Join bottom edge of square 1 to bottom edge of square 2
+        bottom_edge_square_1_vertices = np.zeros((n_cycle_4, 2))
+        bottom_edge_square_1_vertices[:, 0] = bottom_edge_square_1_bottom_edge_square_2
+        bottom_edge_square_1_vertices = np.sort(bottom_edge_square_1_vertices, axis=0)
+        bottom_edge_square_2_vertices = bottom_edge_square_1_vertices
+
+        return [
+            np.concatenate(
+                [
+                    default_vertices,
+                    left_edge_square_1_vertices,
+                    right_edge_square_1_vertices,
+                    top_edge_square_1_vertices,
+                    bottom_edge_square_1_vertices,
+                    n_interior,
+                ]
+            ),
+            np.concatenate(
+                [
+                    default_vertices,
+                    left_edge_square_2_vertices,
+                    right_edge_square_2_vertices,
+                    top_edge_square_2_vertices,
+                    bottom_edge_square_2_vertices,
+                    n_second_square_interior,
+                ]
+            ),
         ]
-    )
 
 
 def generate_genus_0_triangulations(
@@ -255,7 +324,7 @@ def generate_genus_0_triangulations(
     """
 
     points = sample_random_vertices(
-        n_cycle_1=n_cycle_1, n_cycle_2=n_cycle_2, n_interior=n_interior
+        n_cycle_1=n_cycle_1, n_cycle_2=n_cycle_2, n_interior=n_interior, genus=1
     )
     tri = Delaunay(points)
 
@@ -368,6 +437,77 @@ def construct_simplicial_complex(
     return sc
 
 
+def construct_simplicial_complex_genus_0(
+    n_cycle_1: int,
+    n_cycle_2: int,
+    n_cycle_3: int,
+    n_cycle_4: int,
+    n_interior: int,
+    n_interior_square_2: int,
+) -> tnx.SimplicialComplex:
+
+    points = sample_random_vertices(
+        n_cycle_1=n_cycle_1,
+        n_cycle_2=n_cycle_2,
+        n_interior=n_interior,
+        n_second_square_interior=n_interior_square_2,
+        n_cycle_3=n_cycle_3,
+        n_cycle_4=n_cycle_4,
+        genus=0,
+    )
+
+    points_square_1 = points[0]
+    points_square_2 = points[1]
+
+    tri_square_1 = Delaunay(points_square_1)
+    tri_square_2 = Delaunay(points_square_2)
+
+    two_simplex = []
+    tri_list = tri_square_1.simplices.tolist()
+
+    second_square_interior_start_index = (
+        4 + n_cycle_1 + n_cycle_2 + n_cycle_3 + n_cycle_4 + n_interior
+    )
+
+    for triangle in tri_square_2.simplices:
+        for el in triangle:
+            if el not in range(
+                4 + n_cycle_1 + n_cycle_2 + n_cycle_3 + n_cycle_4,
+                4 + n_cycle_1 + n_cycle_2 + n_cycle_3 + n_cycle_4 + n_interior_square_2,
+            ):
+                if not any(np.array_equal(arr, triangle) for arr in tri_list):
+                    tri_list.append(triangle)
+            else:
+                for i in range(
+                    4 + n_cycle_1 + n_cycle_2 + n_cycle_3 + n_cycle_4,
+                    4
+                    + n_cycle_1
+                    + n_cycle_2
+                    + n_cycle_3
+                    + n_cycle_4
+                    + n_interior_square_2,
+                ):
+                    if el == i:
+                        triangle[triangle == el] = (
+                            second_square_interior_start_index
+                            + i
+                            - n_cycle_1
+                            - n_cycle_2
+                            - n_cycle_3
+                            - n_cycle_4
+                            - 4
+                        )
+                if not any(np.array_equal(arr, triangle) for arr in tri_list):
+                    tri_list.append(triangle)
+
+    tri_list = list(set(tuple(triangle) for triangle in tri_list))
+    two_simplex = np.array(tri_list)
+
+    sc = tnx.SimplicialComplex(two_simplex)
+
+    return sc
+
+
 def create_link_graph(incident_edges, E, link_faces):
     # Create the adjacency matrix for the link graph
     link_graph = np.zeros((len(link_faces), len(link_faces)))
@@ -449,7 +589,7 @@ def check_surface_homeomorphic(vertex_edge_matrix, edge_face_matrix):
         degree_counts = np.sum(link_graph, axis=1)
 
         if n_components != 1 or np.any(degree_counts != 2):
-            # print(f"Link check failed for vertex {vertex}")
+            print(f"Link check failed for vertex {vertex}")
             return False
 
     # Step 2: Check if the entire complex (1-skeleton) is connected
@@ -527,6 +667,36 @@ def generate_genus_1_datapoints(
     return genus_1_datapoints
 
 
+def generate_genus_0_datapoints(
+    n_cycle_1: int = 2,
+    n_cycle_2: int = 3,
+    n_cycle_3: int = 2,
+    n_cycle_4: int = 4,
+    n_interior: int = 3,
+    n_interior_square_2: int = 4,
+) -> None:
+
+    sc_sphere = construct_simplicial_complex_genus_0(
+        n_cycle_1=n_cycle_1,
+        n_cycle_2=n_cycle_2,
+        n_cycle_3=n_cycle_3,
+        n_cycle_4=n_cycle_4,
+        n_interior=n_interior,
+        n_interior_square_2=n_interior_square_2,
+    )
+
+    D1 = sc_sphere.incidence_matrix(1).todense()
+    D2 = sc_sphere.incidence_matrix(2).todense()
+    ker_D1 = np.shape(D1)[1] - matrix_rank(D1)
+    H1 = ker_D1 - matrix_rank(D2)
+
+    print(D1)
+    print(D2)
+    print("The 1st homology is", H1)
+    is_surface = check_surface_homeomorphic(D1, D2)
+    print("The complex represents a surface:", is_surface)
+
+
 def save_datapoints(datapoints, folder_path, file_name):
     file_path = os.path.join(folder_path, file_name)
     np.save(file_path, datapoints)
@@ -534,16 +704,25 @@ def save_datapoints(datapoints, folder_path, file_name):
 
 def main() -> None:
 
-    genus_1_datapoints = generate_genus_1_datapoints(
-        n_lower=5, n_upper=100, no_of_points=200
-    )
-    print(genus_1_datapoints.shape)
-    print(genus_1_datapoints[0])
+    # genus_1_datapoints = generate_genus_1_datapoints(
+    #     n_lower=5, n_upper=100, no_of_points=200
+    # )
+    # print(genus_1_datapoints.shape)
+    # print(genus_1_datapoints[0])
 
-    save_datapoints(
-        genus_1_datapoints,
-        "data_gen/incidence_matrix_data",
-        "tori_incidence_matrices.npy",
+    # save_datapoints(
+    #     genus_1_datapoints,
+    #     "data_gen/incidence_matrix_data",
+    #     "tori_incidence_matrices.npy",
+    # )
+
+    generate_genus_0_datapoints(
+        n_cycle_1=23,
+        n_cycle_2=20,
+        n_cycle_3=15,
+        n_cycle_4=18,
+        n_interior=30,
+        n_interior_square_2=22,
     )
 
 
