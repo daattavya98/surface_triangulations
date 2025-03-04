@@ -505,7 +505,7 @@ def construct_simplicial_complex_genus_0(
 
     sc = tnx.SimplicialComplex(two_simplex)
 
-    return sc
+    return sc, tri_square_1, tri_square_2
 
 
 def create_link_graph(incident_edges, E, link_faces):
@@ -674,9 +674,9 @@ def generate_genus_0_datapoints(
     n_cycle_4: int = 4,
     n_interior: int = 3,
     n_interior_square_2: int = 4,
-) -> None:
+) -> Tuple[np.ndarray, np.ndarray]:
 
-    sc_sphere = construct_simplicial_complex_genus_0(
+    [sc_sphere, tri_square_1, tri_square_2] = construct_simplicial_complex_genus_0(
         n_cycle_1=n_cycle_1,
         n_cycle_2=n_cycle_2,
         n_cycle_3=n_cycle_3,
@@ -716,7 +716,7 @@ def main() -> None:
     #     "tori_incidence_matrices.npy",
     # )
 
-    generate_genus_0_datapoints(
+    [tri_square_1, tri_square_2] = generate_genus_0_datapoints(
         n_cycle_1=23,
         n_cycle_2=20,
         n_cycle_3=15,
