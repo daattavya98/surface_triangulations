@@ -900,32 +900,99 @@ def save_datapoints(datapoints, folder_path, file_name):
     np.save(file_path, datapoints)
 
 
+def generate_genus_0_dataset(
+    n_lower: int = 5, n_upper: int = 25, no_of_points: int = 25
+) -> None:
+
+    genus_0_datapoints = np.ndarray((no_of_points, 2), dtype=object)
+    cnt = 0
+    i = 0
+
+    while cnt < no_of_points:
+        n_cycle_1 = np.random.randint(n_lower, n_upper)
+        n_cycle_2 = np.random.randint(n_lower, n_upper)
+        n_cycle_3 = np.random.randint(n_lower, n_upper)
+        n_cycle_4 = np.random.randint(n_lower, n_upper)
+        n_interior = np.random.randint(n_lower, n_upper)
+        n_interior_square_2 = np.random.randint(n_lower, n_upper)
+        n_diagonal_1_square_1 = np.random.randint(n_lower, n_upper)
+        n_diagonal_2_square_1 = np.random.randint(n_lower, n_upper)
+        n_diagonal_1_square_2 = np.random.randint(n_lower, n_upper)
+        n_diagonal_2_square_2 = np.random.randint(n_lower, n_upper)
+
+        try:
+            sc_sphere = construct_simplicial_complex_genus_0(
+                n_cycle_1=n_cycle_1,
+                n_cycle_2=n_cycle_2,
+                n_cycle_3=n_cycle_3,
+                n_cycle_4=n_cycle_4,
+                n_interior=n_interior,
+                n_interior_square_2=n_interior_square_2,
+                n_diagonal_1_square_1=n_diagonal_1_square_1,
+                n_diagonal_2_square_1=n_diagonal_2_square_1,
+                n_diagonal_1_square_2=n_diagonal_1_square_2,
+                n_diagonal_2_square_2=n_diagonal_2_square_2,
+            )[0]
+        except Exception:
+            continue
+
+        D1 = sc_sphere.incidence_matrix(1).todense()
+        D2 = sc_sphere.incidence_matrix(2).todense()
+
+        ker_D1 = np.shape(D1)[1] - matrix_rank(D1)
+        H1 = ker_D1 - matrix_rank(D2)
+
+        print(D1.shape)
+        print(D2.shape)
+        print("The 1st homology is", H1)
+        is_surface = check_surface_homeomorphic(D1, D2)
+        print("The complex represents a surface:", is_surface)
+
+        if is_surface and H1 == 0:
+            if not any(np.array_equal(arr, [D1, D2]) for arr in genus_0_datapoints):
+                genus_0_datapoints[i][0] = D1
+                genus_0_datapoints[i][1] = D2
+                cnt += 1
+
+        if cnt == no_of_points:
+            break
+        elif i == no_of_points - 1:
+            i = 0
+            continue
+
+        i += 1
+
+    genus_0_datapoints = np.array(genus_0_datapoints, dtype=object)
+
+    return genus_0_datapoints
+
+
 def main() -> None:
 
-    # genus_1_datapoints = generate_genus_1_datapoints(
-    #     n_lower=5, n_upper=100, no_of_points=200
-    # )
-    # print(genus_1_datapoints.shape)
-    # print(genus_1_datapoints[0])
-
-    # save_datapoints(
-    #     genus_1_datapoints,
-    #     "data_gen/incidence_matrix_data",
-    #     "tori_incidence_matrices.npy",
-    # )
-
-    [tri1, tri2, points_square1, points_square2] = generate_genus_0_datapoints(
-        n_cycle_1=5,
-        n_cycle_2=12,
-        n_interior=8,
-        n_cycle_3=7,
-        n_cycle_4=9,
-        n_interior_square_2=8,
-        n_diagonal_1_square_1=5,
-        n_diagonal_2_square_1=7,
-        n_diagonal_1_square_2=4,
-        n_diagonal_2_square_2=3,
+    genus_0_datapoints = generate_genus_0_dataset(
+        n_lower=5, n_upper=100, no_of_points=200
     )
+    print(genus_0_datapoints.shape)
+    print(genus_0_datapoints[0])
+
+    save_datapoints(
+        genus_0_datapoints,
+        "data_gen/incidence_matrix_data",
+        "sphere_incidence_matrices.npy",
+    )
+
+    # [tri1, tri2, points_square1, points_square2] = generate_genus_0_datapoints(
+    #     n_cycle_1=5,
+    #     n_cycle_2=12,
+    #     n_interior=8,
+    #     n_cycle_3=7,
+    #     n_cycle_4=9,
+    #     n_interior_square_2=8,
+    #     n_diagonal_1_square_1=5,
+    #     n_diagonal_2_square_1=7,
+    #     n_diagonal_1_square_2=4,
+    #     n_diagonal_2_square_2=3,
+    # )
     # points = sample_random_vertices()
 
     # points_square1 = points[0]
@@ -934,22 +1001,22 @@ def main() -> None:
     # tri1 = Delaunay(points_square1)
     # tri2 = Delaunay(points_square2)
     # Create a figure with two subplots
-    fig, axs = plt.subplots(1, 2)
+    # fig, axs = plt.subplots(1, 2)
 
-    # Plot the first triangulation in the first subplot
-    axs[0].triplot(points_square1[:, 0], points_square1[:, 1], tri1.simplices)
-    axs[0].plot(points_square1[:, 0], points_square1[:, 1], "o")
-    axs[0].set_title("Triangulation 1")
+    # # Plot the first triangulation in the first subplot
+    # axs[0].triplot(points_square1[:, 0], points_square1[:, 1], tri1.simplices)
+    # axs[0].plot(points_square1[:, 0], points_square1[:, 1], "o")
+    # axs[0].set_title("Triangulation 1")
 
-    # Plot the second triangulation in the second subplot
-    axs[1].triplot(points_square2[:, 0], points_square2[:, 1], tri2.simplices)
-    axs[1].plot(points_square2[:, 0], points_square2[:, 1], "o")
-    axs[1].set_title("Triangulation 2")
+    # # Plot the second triangulation in the second subplot
+    # axs[1].triplot(points_square2[:, 0], points_square2[:, 1], tri2.simplices)
+    # axs[1].plot(points_square2[:, 0], points_square2[:, 1], "o")
+    # axs[1].set_title("Triangulation 2")
 
-    # Adjust the spacing between subplots
-    plt.tight_layout()
+    # # Adjust the spacing between subplots
+    # plt.tight_layout()
 
-    plt.show()
+    # plt.show()
 
 
 if __name__ == "__main__":
