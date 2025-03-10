@@ -1,8 +1,6 @@
 import os
-from itertools import combinations
-from typing import List, Tuple
+from typing import Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
 import toponetx as tnx
 from numpy.linalg import matrix_rank
@@ -790,7 +788,7 @@ def check_surface_homeomorphic(vertex_edge_matrix, edge_face_matrix):
 
 
 def generate_genus_1_datapoints(
-    n_lower: int = 5, n_upper: int = 25, no_of_points: int = 25
+    n_lower: int = 5, n_upper: int = 10, no_of_points: int = 25
 ) -> np.ndarray:
 
     genus_1_datapoints = np.ndarray((no_of_points, 2), dtype=object)
@@ -969,16 +967,16 @@ def generate_genus_0_dataset(
 
 def main() -> None:
 
-    genus_0_datapoints = generate_genus_0_dataset(
-        n_lower=5, n_upper=100, no_of_points=200
+    genus_1_datapoints = generate_genus_1_datapoints(
+        n_lower=5, n_upper=100, no_of_points=35
     )
-    print(genus_0_datapoints.shape)
-    print(genus_0_datapoints[0])
+    # print(genus_1_datapoints.shape)
+    # print(genus_1_datapoints[0])
 
     save_datapoints(
-        genus_0_datapoints,
+        genus_1_datapoints,
         "data_gen/incidence_matrix_data",
-        "sphere_incidence_matrices.npy",
+        "additional_torus_incidence_matrices.npy",
     )
 
     # [tri1, tri2, points_square1, points_square2] = generate_genus_0_datapoints(
