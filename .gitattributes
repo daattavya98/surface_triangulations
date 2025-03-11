@@ -1,3 +1,2 @@
-*.npy filter=lfs diff=lfs merge=lfs -text
 data_gen/random_matrices.npy !text !filter !merge !diff
 data_gen/random_odd_even.npy !text !filter !merge !diff
