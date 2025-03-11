@@ -346,10 +346,6 @@ def breakup_sphere_dataset_for_git_lfs(data: np.ndarray) -> None:
 
 @beartype
 def main() -> None:
-    # torus_dataset = load_datafile("cleaned_torus_incidence_matrices.npy")
-    # torus_df = dataset_to_dataframe(torus_dataset)
-    # print(torus_df.head())
-    # save_dataframe_to_csv(torus_df, "torus_dataset.csv")
 
     sphere_dataset = load_datafile("cleaned_sphere_incidence_matrices.npy")
     breakup_sphere_dataset_for_git_lfs(sphere_dataset)
