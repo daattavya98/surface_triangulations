@@ -134,5 +134,7 @@ cython_debug/
 
 data_gen/incidence_matrix_data/additional_sphere_incidence_matrices.npy
 data_gen/incidence_matrix_data/additional_torus_incidence_matrices.npy
-data_gen/incidence_matrix_data/sphere_incidence_matrices_2.npy
-data_gen/incidence_matrix_data/sphere_incidence_matrices_3.npy
+data_gen/incidence_matrix_data/sphere_incidence_matrices.npy
+data_gen/incidence_matrix_data/tori_incidence_matrices.npy
+data_gen/incidence_matrix_data/cleaned_sphere_incidence_matrices.npy
+data_gen/incidence_matrix_data/Dataset.zip
