@@ -463,7 +463,7 @@ def generate_genus_1_triangulations(
 
 
 # def fix_boundary_edges_genus_0(previous_tri_list: List, square_simplices: np.ndarray, new_label_counter: int):
-#     """
+#   """
 #     Fix the gluing of the triangulation for the boundary edges in genus 0.
 
 #     Parameters
@@ -968,36 +968,34 @@ def generate_genus_0_dataset(
 
 
 def main() -> None:
+    """# genus_0_datapoints = generate_genus_0_dataset(
+    #     n_lower=5, n_upper=100, no_of_points=200
+    # )
+    # print(genus_0_datapoints.shape)
+    # print(genus_0_datapoints[0])
 
-    genus_0_datapoints = generate_genus_0_dataset(
-        n_lower=5, n_upper=100, no_of_points=200
-    )
-    print(genus_0_datapoints.shape)
-    print(genus_0_datapoints[0])
-
-    save_datapoints(
-        genus_0_datapoints,
-        "data_gen/incidence_matrix_data",
-        "sphere_incidence_matrices.npy",
-    )
+    # save_datapoints(
+    #     genus_0_datapoints,
+    #     "data_gen/incidence_matrix_data",
+    #     "sphere_incidence_matrices.npy",
+    # )"""
 
     # [tri1, tri2, points_square1, points_square2] = generate_genus_0_datapoints(
-    #     n_cycle_1=5,
+    #     n_cycle_1=13,
     #     n_cycle_2=12,
-    #     n_interior=8,
+    #     n_interior=15,
     #     n_cycle_3=7,
     #     n_cycle_4=9,
-    #     n_interior_square_2=8,
-    #     n_diagonal_1_square_1=5,
-    #     n_diagonal_2_square_1=7,
-    #     n_diagonal_1_square_2=4,
-    #     n_diagonal_2_square_2=3,
+    #     n_interior_square_2=10,
+    #     n_diagonal_1_square_1=7,
+    #     n_diagonal_2_square_1=9,
+    #     n_diagonal_1_square_2=6,
+    #     n_diagonal_2_square_2=8,
     # )
-    # points = sample_random_vertices()
 
-    # points_square1 = points[0]
-    # points_square2 = points[1]
-
+    [points, tri, _, _] = generate_genus_1_triangulations(
+        n_cycle_1=7, n_cycle_2=10, n_interior=18
+    )
     # tri1 = Delaunay(points_square1)
     # tri2 = Delaunay(points_square2)
     # Create a figure with two subplots
@@ -1013,10 +1011,14 @@ def main() -> None:
     # axs[1].plot(points_square2[:, 0], points_square2[:, 1], "o")
     # axs[1].set_title("Triangulation 2")
 
-    # # Adjust the spacing between subplots
-    # plt.tight_layout()
+    plt.triplot(points[:, 0], points[:, 1], tri.simplices)
+    plt.plot(points[:, 0], points[:, 1], "o")
+    plt.title("Triangulation of torus")
 
-    # plt.show()
+    # Adjust the spacing between subplots
+    plt.tight_layout()
+
+    plt.show()
 
 
 if __name__ == "__main__":

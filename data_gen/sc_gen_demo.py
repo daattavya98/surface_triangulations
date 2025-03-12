@@ -3,7 +3,7 @@ import numpy as np
 
 def get_faces(lst):
     """Compute all the possible faces by iteratively deleting vertices"""
-    return [lst[:i] + lst[i+1:] for i in range(len(lst))]
+    return [lst[:i] + lst[i + 1 :] for i in range(len(lst))]
 
 
 def get_coeff(simplex, faces):
@@ -26,7 +26,9 @@ def boundary(complex):
     # Get maximal simplex dimension
     maxdim = len(max(complex, key=len))
     # Group simplices by (ascending) dimension and sort them lexicographically
-    simplices = [sorted([spx for spx in complex if len(spx) == i]) for i in range(1, maxdim+1)]
+    simplices = [
+        sorted([spx for spx in complex if len(spx) == i]) for i in range(1, maxdim + 1)
+    ]
 
     # Iterate over consecutive groups (dim k and k+1)
     bnd = []

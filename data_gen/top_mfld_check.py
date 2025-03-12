@@ -58,7 +58,7 @@ def check_surface_homeomorphic(vertex_edge_matrix, edge_face_matrix):
     """
     # Convert incidence matrices to sparse format for efficiency
     V = csr_matrix(vertex_edge_matrix)  # Vertex-edge incidence matrix
-    E = csr_matrix(edge_face_matrix)    # Edge-face incidence matrix
+    E = csr_matrix(edge_face_matrix)  # Edge-face incidence matrix
 
     # Step 1: Check if links of all vertices are topological circles
     for vertex in range(V.shape[0]):
@@ -74,7 +74,9 @@ def check_surface_homeomorphic(vertex_edge_matrix, edge_face_matrix):
         link_graph = create_link_graph(incident_edges, E, link_faces)
 
         # Check if the link graph is a single connected cycle
-        n_components, _ = connected_components(csr_matrix(link_graph), connection='strong')
+        n_components, _ = connected_components(
+            csr_matrix(link_graph), connection="strong"
+        )
         degree_counts = np.sum(link_graph, axis=1)
 
         if n_components != 1 or np.any(degree_counts != 2):
@@ -112,31 +114,35 @@ def check_surface_homeomorphic(vertex_edge_matrix, edge_face_matrix):
 
 
 # # Cube
-vertex_edge_matrix = np.array([
-    [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],  # v0 connects to e0, e3, e4
-    [1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # v1 connects to e0, e1, e6
-    [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],  # v2 connects to e5, e6, e7
-    [0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0],  # v3 connects to e4, e5, e9
-    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],  # v4 connects to e1, e2, e10
-    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],  # v5 connects to e2, e3, e11
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0],  # v6 connects to e7, e8, e10
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],  # v7 connects to e8, e9, e11
-])
+vertex_edge_matrix = np.array(
+    [
+        [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],  # v0 connects to e0, e3, e4
+        [1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # v1 connects to e0, e1, e6
+        [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],  # v2 connects to e5, e6, e7
+        [0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0],  # v3 connects to e4, e5, e9
+        [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],  # v4 connects to e1, e2, e10
+        [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],  # v5 connects to e2, e3, e11
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0],  # v6 connects to e7, e8, e10
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],  # v7 connects to e8, e9, e11
+    ]
+)
 
-edge_face_matrix = np.array([
-    [1, 0, 0, 0, 0, 1],  # e0 connects to f0, f5
-    [0, 1, 0, 0, 0, 1],  # e1 connects to f1, f5
-    [0, 0, 1, 0, 0, 1],  # e2 connects to f2, f5
-    [0, 0, 0, 1, 0, 1],  # e3 connects to f3, f5
-    [1, 0, 0, 1, 0, 0],  # e4 connects to f0, f3
-    [1, 0, 0, 0, 1, 0],  # e5 connects to f0, f4
-    [1, 1, 0, 0, 0, 0],  # e6 connects to f0, f1
-    [0, 1, 0, 0, 1, 0],  # e7 connects to f1, f4
-    [0, 0, 1, 0, 1, 0],  # e8 connects to f2, f4
-    [0, 0, 0, 1, 1, 0],  # e9 connects to f3, f4
-    [0, 1, 1, 0, 0, 0],  # e10 connects to f1, f2
-    [0, 0, 1, 1, 0, 0],  # e11 connects to f2, f3
-])
+edge_face_matrix = np.array(
+    [
+        [1, 0, 0, 0, 0, 1],  # e0 connects to f0, f5
+        [0, 1, 0, 0, 0, 1],  # e1 connects to f1, f5
+        [0, 0, 1, 0, 0, 1],  # e2 connects to f2, f5
+        [0, 0, 0, 1, 0, 1],  # e3 connects to f3, f5
+        [1, 0, 0, 1, 0, 0],  # e4 connects to f0, f3
+        [1, 0, 0, 0, 1, 0],  # e5 connects to f0, f4
+        [1, 1, 0, 0, 0, 0],  # e6 connects to f0, f1
+        [0, 1, 0, 0, 1, 0],  # e7 connects to f1, f4
+        [0, 0, 1, 0, 1, 0],  # e8 connects to f2, f4
+        [0, 0, 0, 1, 1, 0],  # e9 connects to f3, f4
+        [0, 1, 1, 0, 0, 0],  # e10 connects to f1, f2
+        [0, 0, 1, 1, 0, 0],  # e11 connects to f2, f3
+    ]
+)
 
 # Some random complex
 # vertex_edge_matrix = np.array([
