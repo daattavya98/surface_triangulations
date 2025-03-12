@@ -1203,14 +1203,14 @@ referencing = ">=0.31.0"
 
 [[package]]
 name = "juliacall"
-version = "0.9.23"
+version = "0.9.24"
 description = "Julia and Python in seamless harmony"
 optional = false
-python-versions = "~=3.8"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "juliacall-0.9.23-py3-none-any.whl", hash = "sha256:67689bdeadf8438f4b302cbe88b31610ee8b345577b4df04328d67c4e66f5e62"},
-    {file = "juliacall-0.9.23.tar.gz", hash = "sha256:536f2e0f4ccfd34920322121b4353079029123eae81b7200ed1787e49d8053d2"},
+    {file = "juliacall-0.9.24-py3-none-any.whl", hash = "sha256:f1d7b718228c477aeba770290647f3b2d0052f683da891b4e9f88c1e1da0a394"},
+    {file = "juliacall-0.9.24.tar.gz", hash = "sha256:31bed223489b535e4e8db46bfff4596350c24f757b9c2d17296c07397f75948b"},
 ]
 
 [package.dependencies]
@@ -2971,19 +2971,19 @@ diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pysr"
-version = "1.1.0"
+version = "1.5.2"
 description = "Simple and efficient symbolic regression"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "pysr-1.1.0-py3-none-any.whl", hash = "sha256:9bc66d229e48a40be4ab16cd5813d4c53acbd6af1d0a3dd97bba68e6752e0e18"},
-    {file = "pysr-1.1.0.tar.gz", hash = "sha256:15c8be7e9ddf35f97dbd79d25051c70d69a7f841956674da6e47df8150eccc2c"},
+    {file = "pysr-1.5.2-py3-none-any.whl", hash = "sha256:4afefcc0cc1ac31945daee061212cf3b02e6e87f16ca2b82f9cf557f40675b63"},
+    {file = "pysr-1.5.2.tar.gz", hash = "sha256:4ca4a608c51d5f0fafaebf4ef0cc68fb4aeffcb63a57f344ab9458d31669a5d9"},
 ]
 
 [package.dependencies]
 click = ">=7.0.0,<9.0.0"
-juliacall = "0.9.23"
+juliacall = "0.9.24"
 numpy = ">=1.13.0,<3.0.0"
 pandas = ">=0.21.0,<3.0.0"
 scikit_learn = ">=1.0.0,<2.0.0"
@@ -2991,7 +2991,7 @@ setuptools = ">=50.0.0"
 sympy = ">=1.0.0,<2.0.0"
 
 [package.extras]
-dev = ["beartype (>=0.19,<0.20)", "coverage (>=7,<8)", "coveralls (>=4,<5)", "ipykernel (>=6,<7)", "ipython (>=8,<9)", "jax[cpu] (>=0.4,<0.5)", "jupyter (>=1,<2)", "mypy (>=1,<2)", "nbval (>=0.11,<0.12)", "pandas-stubs", "pre-commit (>=3.7,<5)", "pytest (>=8,<9)", "pytest-cov (>=5,<7)", "tensorboard (>=2,<3)", "torch (>=2,<3)", "types-openpyxl", "types-pytz"]
+dev = ["beartype (>=0.19,<0.21)", "coverage (>=7,<8)", "coveralls (>=4,<5)", "ipykernel (>=6,<7)", "ipython (>=8,<9)", "jax[cpu] (>=0.4,<0.6)", "jupyter (>=1,<2)", "mypy (>=1,<2)", "nbval (>=0.11,<0.12)", "pandas-stubs", "pre-commit (>=3.7,<5)", "pytest (>=8,<9)", "pytest-cov (>=5,<7)", "tensorboard (>=2,<3)", "torch (>=2,<3)", "types-openpyxl", "types-pytz"]
 
 [[package]]
 name = "python-dateutil"

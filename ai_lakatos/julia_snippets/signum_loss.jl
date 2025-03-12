@@ -7,12 +7,13 @@ struct SignumLoss <: Function
   requiredOps::AbstractVector{Tuple{Integer,Integer}}
   complexityWeight::Real
   unusedFunctionPenalty::Real
+  punishConstant::Real
   # tightnessStrength::Real
   # tightnessLengthScale::Real
 end
 
-function SignumLoss(requiredOps=[(1, 2), (2, 3), (2, 4)]; complexityWeight=0.5, unusedFunctionPenalty=1e1)
-  return SignumLoss(requiredOps, complexityWeight, unusedFunctionPenalty)
+function SignumLoss(requiredOps=[(1, 2), (2, 3), (2, 4)]; complexityWeight=0.5, unusedFunctionPenalty=1e1, punishConstant=1e3)
+  return SignumLoss(requiredOps, complexityWeight, unusedFunctionPenalty, punishConstant)
 end
 
 function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,L}
@@ -35,6 +36,14 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
     end
   end
 
+  # Punish using constants
+  constant_count = 0
+  foreach(tree) do node
+    if node.constant
+      constant_count += 1
+    end
+  end
+
   unusedFunctionCount = sum(.!values(required_f))
   if unusedFunctionCount > 0
     # Short circuit return if not all required functions are used
@@ -48,6 +57,6 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
   end
 
   # Signum loss
-  signumLoss = mean(y_pred .> y) + 1 / complexity * loss.complexityWeight
+  signumLoss = mean(y_pred .> y) + 1 / complexity * loss.complexityWeight + constant_count * loss.punishConstant
   return L(signumLoss)
 end
