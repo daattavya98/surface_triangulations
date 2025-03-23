@@ -1,0 +1,8 @@
+Complexity,Loss,Equation
+1,1.0e6,"0.17119688"
+12,4.0833335,"equals((nullity_D2 + implies(rank_D2 - rank_D2, nullity_D2)) + -0.6012691, neg(nullity_D2))"
+13,3.0769231,"equals(width_D2 - width_D1, neg(width_D1)) + neg(implies(rank_D2 - rank_D2, nullity_D2))"
+16,3.0625,"(width_D2 - width_D1) * neg(nullity_D1 + (implies(rank_D2 - rank_D2, nullity_D2) + equals(rank_D1, rank_D2)))"
+17,3.0588236,"neg(neg(((rank_D2 - rank_D2) * nullity_D1) + (implies(rank_D2 - rank_D2, nullity_D2) + equals(nullity_D2, rank_D2))))"
+18,3.0555556,"(width_D2 - width_D1) * neg(nullity_D1 + (implies(rank_D2 - rank_D2, nullity_D2) + equals(nullity_D2, equals(rank_D2, rank_D2))))"
+19,3.0526316,"width_D2 - (width_D1 * neg(neg(nullity_D2) + (implies(rank_D2 - rank_D2, nullity_D2) + equals(nullity_D2, equals(rank_D2, rank_D2)))))"

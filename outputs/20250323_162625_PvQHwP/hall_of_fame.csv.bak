@@ -1,0 +1,3 @@
+Complexity,Loss,Equation
+1,3000.0,"1.0"
+4,1000.0,"implies(nullity_D1, logical_neg(-2.212791))"

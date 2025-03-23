@@ -1,0 +1,4 @@
+Complexity,Loss,Equation
+1,3000.0,"1.0"
+2,2000.0,"logical_neg(-0.16007054)"
+4,1000.0,"logical_neg(implies(0.0, 0.11693565))"
