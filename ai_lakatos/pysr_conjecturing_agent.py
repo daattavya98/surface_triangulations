@@ -33,9 +33,9 @@ def create_regressor_model(
 ) -> PySRRegressor:
 
     model = PySRRegressor(
-        populations=32,
-        niterations=50,
-        ncycles_per_iteration=1000,
+        populations=50,
+        niterations=500,
+        ncycles_per_iteration=2000,
         binary_operators=["+", "*", "equals", "implies", "-"],
         unary_operators=[
             "logical_neg",
@@ -48,8 +48,12 @@ def create_regressor_model(
             "implies": sympy_p,
             "logical_neg": sympy_p,
         },
+        # nested_constraints={"logical_neg": {"logical_neg": 2}},
         maxsize=maxsize,
         warmup_maxsize_by=warmup_maxsize_by,
+        complexity_of_constants=100,
+        should_optimize_constants=False,
+        weight_mutate_constant=0.0,
     )
     return model
 
@@ -71,12 +75,12 @@ jl.seval(
 jl.seval(
     """
          function implies(x::T, y::T) where T
-            if (x != T(0.0) && x != T(1.0)) || (y != T(0.0) && y != T(1.0))
-                return T(NaN)
-            elseif (x == T(1.0) && y == T(0.0))
+            if (x == T(1.0) && y == T(0.0))
                 return T(0.0)
-            else
+            elseif (x == T(0.0) && y == T(1.0)) || (x == T(1.0) && y == T(1.0)) || (x == T(0.0) && y == T(0.0))
                 return T(1.0)
+            else
+                return T(NaN)
             end
          end
          """
@@ -103,8 +107,9 @@ jl.include("ai_lakatos/julia_snippets/signum_loss.jl")
 
 
 loss = jl.seval(
-    """SignumLoss([(1, 1), (2, 1), (2, 3), (2, 4), (2, 5)]; complexityWeight=1.0, unusedFunctionPenalty=1e4,
-                punishConstant=0.0, logicalErrorPenalty=1e3)"""
+    """SignumLoss([(1, 1), (2, 3), (2, 4)]; complexityWeight=0.05, unusedFunctionPenalty=1e2,
+                punishConstant=0.0, logicalErrorPenalty=1e2, logicalNegPenalty=0.25, equalsPenalty=0.25,
+                impliesPenalty=0.25, outerNodePenalty=1e4)"""
 )
 
 
@@ -112,6 +117,11 @@ X_sphere = load_datafile("sphere_dataset.csv")[1:, 1:-1]
 X_torus = load_datafile("torus_dataset.csv")[1:, 1:-1]
 # X = pd.concat([X_sphere, X_torus], axis=0, ignore_index=True)
 X = np.concatenate((X_sphere, X_torus), axis=0)
+# X = np.insert(X, 8, -2, axis=1)
+# X = np.insert(X, 8, -1, axis=1)
+X = np.insert(X, 8, 0, axis=1)
+X = np.insert(X, 9, 1, axis=1)
+# X = np.insert(X, 12, 2, axis=1)
 
 variable_names = [
     "width_D1",
@@ -122,10 +132,14 @@ variable_names = [
     "rank_D2",
     "nullity_D1",
     "nullity_D2",
+    "_0",
+    "_1",
 ]
-y = np.array([2.0 for _ in range(len(X))])
+# y = np.concatenate((np.array([2.0 for _ in range(len(X_sphere))]),
+# np.array([0.0 for _ in range(len(X_torus))])), axis=0)
+y = np.array([1.0 for _ in range(len(X))])
 
-model = create_regressor_model(loss_func=loss, maxsize=30)
+model = create_regressor_model(loss_func=loss, maxsize=35)
 model.fit(X, y, variable_names=variable_names)
 print(model.get_best().equation)
 # print(model.get_best().to_latex())

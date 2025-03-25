@@ -1,6 +1,0 @@
-Complexity,Loss,Equation
-1,1000.0,"0.0"
-17,3.0588236,"0.5693251 - equals(0.0221959 + -0.29459867, logical_neg(logical_neg(logical_neg(logical_neg(implies(equals(rank_D2, rank_D2), equals(rank_D1, width_D1)))))))"
-18,3.0555556,"logical_neg(equals(0.5693251 - (0.0221959 + -0.29459867), logical_neg(logical_neg(logical_neg(logical_neg(implies(equals(rank_D2, -1.1832196), equals(rank_D1, width_D1))))))))"
-19,3.0526316,"logical_neg(logical_neg(equals(0.5693251 - (width_D1 + rank_D1), logical_neg(logical_neg(logical_neg(logical_neg(implies(equals(-1.1832196, rank_D2), equals(rank_D1, width_D1)))))))))"
-20,3.05,"logical_neg(logical_neg(equals(0.5693251 - (width_D1 + rank_D1), logical_neg(logical_neg(logical_neg(logical_neg(logical_neg(implies(equals(-1.1832196, rank_D2), equals(rank_D1, width_D1))))))))))"

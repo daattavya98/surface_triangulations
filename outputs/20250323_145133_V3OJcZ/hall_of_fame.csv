@@ -1,4 +1,0 @@
-Complexity,Loss,Equation
-1,3.0e6,"0.0"
-3,2.0e6,"implies(nullity_D1, 1.0)"
-6,1.0e6,"height_D2 + logical_neg(implies(nullity_D1, 0.85932463))"

@@ -1,4 +1,0 @@
-Complexity,Loss,Equation
-1,20000.0,"1.0"
-4,10000.0,"logical_neg(width_D1 - 0.0)"
-14,1002.0714,"-0.8725286 - implies(equals(equals(rank_D2 - -0.19111095, width_D1), -1.4707942 + width_D1), logical_neg(nullity_D2))"

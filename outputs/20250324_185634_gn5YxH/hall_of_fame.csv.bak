@@ -1,0 +1,6 @@
+Complexity,Loss,Equation
+2,1.5,"logical_neg(nullity_D2)"
+3,1.3333334,"_0 - rank_D2"
+5,1.2,"logical_neg(nullity_D2) + logical_neg(_1)"
+6,1.1666666,"(width_D2 * nullity_D2) * logical_neg(_1)"
+7,1.1428572,"(width_D1 + nullity_D1) - (height_D1 * nullity_D2)"

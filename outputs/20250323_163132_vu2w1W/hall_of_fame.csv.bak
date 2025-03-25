@@ -1,3 +1,0 @@
-Complexity,Loss,Equation
-1,1000.0,"0.4168312"
-10,1.0833334,"logical_neg(implies(equals(nullity_D2 + nullity_D2, rank_D2 - 1.2344016), 0.0))"
