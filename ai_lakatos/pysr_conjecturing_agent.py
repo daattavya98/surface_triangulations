@@ -118,20 +118,26 @@ jl.include("ai_lakatos/julia_snippets/signum_loss.jl")
 
 loss = jl.seval(
     """SignumLoss(
-        complexityWeight=0.05,
         unusedFunctionPenalty=1e2,
         punishConstant=0.0,
         logicalErrorPenalty=1e2,
-        logicalNegUsedBoost=0.25,
-        equalsUsedBoost=0.25,
-        impliesUsedBoost=0.25,
-        outerNodePenalty=1e4,
-        equalsLogicalCompErrorPenalty=10.0,
-        impliesLogicalCompErrorPenalty=10.0,
-        negLogicalCompErrorPenalty=10.0,
-        plusLogicalCompErrorPenalty=10.0,
-        timesLogicalCompErrorPenalty=10.0,
-        minusLogicalCompErrorPenalty=10.0,
+        complexityWeight=1.0,
+        logicalNegUsedBoost=1.0,
+        equalsUsedBoost=2.0,
+        impliesUsedBoost=2.0,
+        minusUsedBoost=0.5,
+        plusUsedBoost=1.5,
+        timesUsedBoost=0.5,
+        outerNodePenalty=100.0,
+        equalsLogicalCompErrorPenalty=40.0,
+        impliesLogicalCompErrorPenalty=16.0,
+        negLogicalCompErrorPenalty=12.0,
+        plusLogicalCompErrorPenalty=2.0,
+        timesLogicalCompErrorPenalty=2.0,
+        minusLogicalCompErrorPenalty=2.0,
+        equalsSemanticErrorPenalty=50.0,
+        impliesSemanticErrorPenalty=50.0,
+        dataErrorPenalty=18.0,
     )
     """
 )

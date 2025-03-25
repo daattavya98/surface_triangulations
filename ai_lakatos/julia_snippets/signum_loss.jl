@@ -11,6 +11,9 @@ struct SignumLoss <: Function
   logicalNegUsedBoost::Real
   equalsUsedBoost::Real
   impliesUsedBoost::Real
+  plusUsedBoost::Real
+  timesUsedBoost::Real
+  minusUsedBoost::Real
   outerNodePenalty::Real
   equalsLogicalCompErrorPenalty::Real
   impliesLogicalCompErrorPenalty::Real
@@ -18,6 +21,9 @@ struct SignumLoss <: Function
   plusLogicalCompErrorPenalty::Real
   timesLogicalCompErrorPenalty::Real
   minusLogicalCompErrorPenalty::Real
+  equalsSemanticErrorPenalty::Real
+  impliesSemanticErrorPenalty::Real
+  dataErrorPenalty::Real
   # tightnessStrength::Real
   # tightnessLengthScale::Real
 end
@@ -30,13 +36,19 @@ function SignumLoss(;
   logicalNegUsedBoost=1e2,
   equalsUsedBoost=1e2,
   impliesUsedBoost=1e2,
+  plusUsedBoost=1e2,
+  timesUsedBoost=1e2,
+  minusUsedBoost=1e2,
   outerNodePenalty=1e2,
   equalsLogicalCompErrorPenalty=1e2,
   impliesLogicalCompErrorPenalty=1e2,
   negLogicalCompErrorPenalty=1e2,
   plusLogicalCompErrorPenalty=1e2,
   timesLogicalCompErrorPenalty=1e2,
-  minusLogicalCompErrorPenalty=1e2
+  minusLogicalCompErrorPenalty=1e2,
+  equalsSemanticErrorPenalty=1e2,
+  impliesSemanticErrorPenalty=1e2,
+  dataErrorPenalty=1e2,
   )
   return SignumLoss(
     complexityWeight,
@@ -46,13 +58,19 @@ function SignumLoss(;
     logicalNegUsedBoost,
     equalsUsedBoost,
     impliesUsedBoost,
+    plusUsedBoost,
+    timesUsedBoost,
+    minusUsedBoost,
     outerNodePenalty,
     equalsLogicalCompErrorPenalty,
     impliesLogicalCompErrorPenalty,
     negLogicalCompErrorPenalty,
     plusLogicalCompErrorPenalty,
     timesLogicalCompErrorPenalty,
-    minusLogicalCompErrorPenalty
+    minusLogicalCompErrorPenalty,
+    equalsSemanticErrorPenalty,
+    impliesSemanticErrorPenalty,
+    dataErrorPenalty
 )
 end
 
@@ -90,14 +108,17 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
 
   plus_index = 1
   times_index = 2
-  minus_index = 5
   equals_index = 3
   implies_index = 4
+  minus_index = 5
   logical_neg_index = 6
 
   logical_neg_used_count = 0
   equals_used_count = 0
   implies_used_count = 0
+  plus_used_count = 0
+  times_used_count = 0
+  minus_used_count = 0
 
   logical_neg_logical_error_count = 0
   equals_logical_error_count = 0
@@ -105,6 +126,9 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
   plus_logical_error_count = 0
   times_logical_error_count = 0
   minus_logical_error_count = 0
+
+  equals_semantic_error_count = 0
+  implies_semantic_error_count = 0
 
   for node in tree
     is_equals_node = node.degree == 2 && node.op == equals_index
@@ -121,6 +145,11 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
       if (left_child.degree == 2 && left_child.op == equals_index) || (left_child.degree == 1 && left_child.op == logical_neg_index) || (left_child.degree == 2 && left_child.op == implies_index) || (right_child.degree == 2 && right_child.op == equals_index) || (right_child.degree == 1 && right_child.op == logical_neg_index) || (right_child.degree == 2 && right_child.op == implies_index)
         equals_logical_error_count += 1
       end
+      if (left_child.degree == 0 && left_child.constant == false) && (right_child.degree == 0 && right_child.constant == false)
+        if left_child.feature == right_child.feature
+          equals_semantic_error_count += 1
+        end
+      end
     end
     if is_implies_node
       implies_used_count += 1
@@ -128,6 +157,13 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
       right_child = node.r
       if (left_child.degree == 2 && left_child.op != equals_index) || (left_child.degree == 1 && left_child.op != logical_neg_index) || (left_child.degree == 0) || (right_child.degree == 2 && right_child.op != equals_index) || (right_child.degree == 1 && right_child.op != logical_neg_index) || (right_child.degree == 0)
         implies_logical_error_count += 1
+      end
+      left_child_val, ok = eval_tree_array(left_child, X, options)
+      left_child_val = mean(left_child_val)
+      if !ok
+        return L(Inf)
+      elseif left_child_val == L(0.0)
+        implies_semantic_error_count += 1
       end
     end
     if is_neg_node
@@ -138,6 +174,7 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
       end
     end
     if is_plus_node
+      plus_used_count += 1
       left_child = node.l
       right_child = node.r
       if (left_child.degree == 2 && left_child.op == implies_index) || (left_child.degree == 2 && left_child.op == equals_index) || (left_child.degree == 1 && left_child.op == logical_neg_index) || (right_child.degree == 2 && right_child.op == implies_index) || (right_child.degree == 2 && right_child.op == equals_index) || (right_child.degree == 1 && right_child.op == logical_neg_index)
@@ -145,6 +182,7 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
       end
     end
     if is_times_node
+      times_used_count += 1
       left_child = node.l
       right_child = node.r
       if (left_child.degree == 2 && left_child.op == implies_index) || (left_child.degree == 2 && left_child.op == equals_index) || (left_child.degree == 1 && left_child.op == logical_neg_index) || (right_child.degree == 2 && right_child.op == implies_index) || (right_child.degree == 2 && right_child.op == equals_index) || (right_child.degree == 1 && right_child.op == logical_neg_index)
@@ -152,6 +190,7 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
       end
     end
     if is_minus_node
+      minus_used_count += 1
       left_child = node.l
       right_child = node.r
       if (left_child.degree == 2 && left_child.op == implies_index) || (left_child.degree == 2 && left_child.op == equals_index) || (left_child.degree == 1 && left_child.op == logical_neg_index) || (right_child.degree == 2 && right_child.op == implies_index) || (right_child.degree == 2 && right_child.op == equals_index) || (right_child.degree == 1 && right_child.op == logical_neg_index)
@@ -189,9 +228,11 @@ function (loss::SignumLoss)(tree, dataset::Dataset{T,L}, options, idx) where {T,
     return L(Inf)
   end
 
+  # normalization_factor = maximum(abs.(y_pred .- y)) - minimum(abs.(y_pred .- y))
+  normalization_factor = 1
 
   # Signum loss
-  signumLoss = exp(mean(y_pred .= y) - 1 / complexity * loss.complexityWeight + logical_neg_logical_error_count * loss.negLogicalCompErrorPenalty + equals_logical_error_count * loss.equalsLogicalCompErrorPenalty + implies_logical_error_count * loss.impliesLogicalCompErrorPenalty + plus_logical_error_count * loss.plusLogicalCompErrorPenalty + times_logical_error_count * loss.timesLogicalCompErrorPenalty + minus_logical_error_count * loss.minusLogicalCompErrorPenalty - logical_neg_used_count * loss.logicalNegUsedBoost - equals_used_count * loss.equalsUsedBoost - implies_used_count * loss.impliesUsedBoost + outer_penalty)
+  signumLoss = exp((loss.dataErrorPenalty * mean(y_pred .= y)) - 1 / complexity * loss.complexityWeight + normalization_factor * (logical_neg_logical_error_count * loss.negLogicalCompErrorPenalty + equals_logical_error_count * loss.equalsLogicalCompErrorPenalty + implies_logical_error_count * loss.impliesLogicalCompErrorPenalty + plus_logical_error_count * loss.plusLogicalCompErrorPenalty + times_logical_error_count * loss.timesLogicalCompErrorPenalty + minus_logical_error_count * loss.minusLogicalCompErrorPenalty - logical_neg_used_count * loss.logicalNegUsedBoost - equals_used_count * loss.equalsUsedBoost - implies_used_count * loss.impliesUsedBoost + outer_penalty) - plus_used_count * loss.plusUsedBoost - minus_used_count * loss.minusUsedBoost - times_used_count * loss.timesUsedBoost + equals_semantic_error_count * loss.equalsSemanticErrorPenalty + implies_semantic_error_count * loss.impliesSemanticErrorPenalty)
   return L(signumLoss)
 end
 
