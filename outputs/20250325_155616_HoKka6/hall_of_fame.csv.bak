@@ -1,0 +1,4 @@
+Complexity,Loss,Equation
+2,Inf,"logical_neg(rank_D1)"
+3,2135.9497,"equals(nullity_D2, height_D1)"
+7,714.38965,"equals(nullity_D2, rank_D1) - equals(nullity_D2, rank_D1)"
