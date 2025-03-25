@@ -17,14 +17,14 @@ arithmetic_symbols = {
 # Mapping of linear algebra symbols to lean equivalents,
 # with a new entry for height_D1.
 linear_algebra_symbols = {
-    "width_D1": "finite_dimensional.finrank ℚ V1",
-    "height_D1": "finite_dimensional.finrank ℚ V0",  # Corrected replacement
-    "height_D2": "finite_dimensional.finrank ℚ V1",
-    "width_D2": "finite_dimensional.finrank ℚ V2",
-    "rank_D1": "finite_dimensional.finrank ℚ (linear_map.range D1)",
-    "rank_D2": "finite_dimensional.finrank ℚ (linear_map.range D2)",
-    "nullity_D1": "finite_dimensional.finrank ℚ (linear_map.ker D1)",
-    "nullity_D2": "finite_dimensional.finrank ℚ (linear_map.ker D2)",
+    "width_D1": "Module.finrank ℚ V1",
+    "height_D1": "Module.finrank ℚ V0",  # Corrected replacement
+    "height_D2": "Module.finrank ℚ V1",
+    "width_D2": "Module.finrank ℚ V2",
+    "rank_D1": "Module.finrank ℚ (linear_map.range D1)",
+    "rank_D2": "Module.finrank ℚ (linear_map.range D2)",
+    "nullity_D1": "Module.finrank ℚ (linear_map.ker D1)",
+    "nullity_D2": "Module.finrank ℚ (linear_map.ker D2)",
 }
 
 
@@ -113,13 +113,13 @@ def translate_to_lean(formula: str) -> str:
     vector_spaces = []
     linear_maps = []
     vector_spaces.append(
-        "(V0 : Type*) [add_comm_group V0] [module ℚ V0] [finite_dimensional ℚ V0]"
+        "(V0 : Type*) [AddCommGroup V0] [module ℚ V0] [FiniteDimensional ℚ V0]"
     )
     vector_spaces.append(
-        "(V1 : Type*) [add_comm_group V1] [module ℚ V1] [finite_dimensional ℚ V1]"
+        "(V1 : Type*) [AddCommGroup V1] [module ℚ V1] [FiniteDimensional ℚ V1]"
     )
     vector_spaces.append(
-        "(V2 : Type*) [add_comm_group V2] [module ℚ V2] [finite_dimensional ℚ V2]"
+        "(V2 : Type*) [AddCommGroup V2] [module ℚ V2] [FiniteDimensional ℚ V2]"
     )
 
     if use_D1:
