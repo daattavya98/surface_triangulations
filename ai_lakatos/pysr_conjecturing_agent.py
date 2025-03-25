@@ -4,6 +4,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import sympy
+from equation_to_lean_statement import translate_to_lean
 from pysr import PySRRegressor, TensorBoardLoggerSpec, jl
 
 
@@ -36,9 +37,9 @@ def create_regressor_model(
 ) -> PySRRegressor:
 
     model = PySRRegressor(
-        populations=50,
-        niterations=500,
-        ncycles_per_iteration=2000,
+        populations=15,
+        niterations=50,
+        ncycles_per_iteration=1000,
         binary_operators=["+", "*", "equals", "implies", "-"],
         unary_operators=[
             "logical_neg",
@@ -171,5 +172,7 @@ y = np.array([1.0 for _ in range(len(X))])
 
 model = create_regressor_model(loss_func=loss, maxsize=35, log_spec=logger_spec)
 model.fit(X, y, variable_names=variable_names)
-print(model.get_best().equation)
-# print(model.get_best().to_latex())
+a = model.get_best().equation
+print(a)
+lean_translation = translate_to_lean(a)
+print(lean_translation)
