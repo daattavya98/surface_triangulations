@@ -1,0 +1,12 @@
+Complexity,Loss,Equation
+1,Inf,"height_D2"
+3,3.0891324e15,"implies(_1, _1)"
+5,2.3783186e13,"implies(_1, equals(height_D1, width_D1))"
+7,2.3564184,"implies(equals(rank_D2, nullity_D1), equals(height_D1, rank_D1))"
+10,0.016572675,"implies(equals(nullity_D2, _1), equals(_1, logical_neg(equals(nullity_D2, _1))))"
+13,0.000114272676,"implies(equals(nullity_D2, logical_neg(equals(rank_D2, height_D2))), equals(rank_D2, logical_neg(equals(rank_D2, nullity_D1))))"
+14,1.04777314e-7,"implies(equals(_1, logical_neg(implies(equals(nullity_D2, _1), equals(_1, rank_D1)))), equals(rank_D1, nullity_D2))"
+17,7.149393e-10,"implies(equals(logical_neg(implies(equals(height_D2, width_D1), equals(logical_neg(equals(_1, width_D2)), height_D2))), _1), equals(nullity_D1, width_D2))"
+20,4.859916e-12,"implies(equals(logical_neg(implies(equals(_1, nullity_D2), equals(_1, logical_neg(equals(_1, logical_neg(equals(height_D2, nullity_D2))))))), nullity_D2), equals(nullity_D2, rank_D2))"
+21,4.442234e-15,"implies(equals(_1, logical_neg(implies(equals(nullity_D2, _1), equals(_1, rank_D1)))), equals(_1, logical_neg(implies(equals(nullity_D2, _1), equals(_1, rank_D1)))))"
+24,3.011023e-17,"implies(equals(nullity_D2, logical_neg(equals(nullity_D2, width_D1))), equals(logical_neg(implies(equals(nullity_D2, logical_neg(implies(equals(nullity_D2, _1), equals(nullity_D2, width_D1)))), equals(nullity_D2, rank_D1))), _1))"

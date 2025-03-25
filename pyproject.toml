@@ -22,6 +22,7 @@ pysr = "^1.0.0"
 toponetx = "^0.1.1"
 networkx = "^3.4.2"
 pandas = "^2.2.3"
+tensorboard = "^2.19.0"
 
 
 [build-system]
