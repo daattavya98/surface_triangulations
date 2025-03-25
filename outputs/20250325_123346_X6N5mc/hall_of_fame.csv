@@ -1,0 +1,5 @@
+Complexity,Loss,Equation
+1,Inf,"height_D2"
+3,45859.3,"implies(_0, _1)"
+5,35954.156,"implies(equals(_1, rank_D1), _1)"
+7,1.2748865,"implies(equals(nullity_D2, width_D2), equals(height_D1, width_D2))"

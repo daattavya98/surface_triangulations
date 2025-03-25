@@ -4,7 +4,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import sympy
-from pysr import PySRRegressor, jl
+from pysr import PySRRegressor, TensorBoardLoggerSpec, jl
 
 
 class sympy_p(sympy.Function):
@@ -29,7 +29,10 @@ def load_datafile(filename: str) -> np.ndarray:
 
 
 def create_regressor_model(
-    loss_func: Any, maxsize: int = 15, warmup_maxsize_by: float = 1.5
+    log_spec: TensorBoardLoggerSpec,
+    loss_func: Any,
+    maxsize: int = 15,
+    warmup_maxsize_by: float = 1.5,
 ) -> PySRRegressor:
 
     model = PySRRegressor(
@@ -54,9 +57,16 @@ def create_regressor_model(
         complexity_of_constants=100,
         should_optimize_constants=False,
         weight_mutate_constant=0.0,
+        logger_spec=log_spec,
     )
     return model
 
+
+# Create logger
+logger_spec = TensorBoardLoggerSpec(
+    log_dir=os.path.join(os.getcwd(), "logs/runs"),
+    log_interval=10,
+)
 
 # Define equality operator
 jl.seval(
@@ -107,9 +117,23 @@ jl.include("ai_lakatos/julia_snippets/signum_loss.jl")
 
 
 loss = jl.seval(
-    """SignumLoss([(1, 1), (2, 3), (2, 4)]; complexityWeight=0.05, unusedFunctionPenalty=1e2,
-                punishConstant=0.0, logicalErrorPenalty=1e2, logicalNegPenalty=0.25, equalsPenalty=0.25,
-                impliesPenalty=0.25, outerNodePenalty=1e4)"""
+    """SignumLoss(
+        complexityWeight=0.05,
+        unusedFunctionPenalty=1e2,
+        punishConstant=0.0,
+        logicalErrorPenalty=1e2,
+        logicalNegUsedBoost=0.25,
+        equalsUsedBoost=0.25,
+        impliesUsedBoost=0.25,
+        outerNodePenalty=1e4,
+        equalsLogicalCompErrorPenalty=10.0,
+        impliesLogicalCompErrorPenalty=10.0,
+        negLogicalCompErrorPenalty=10.0,
+        plusLogicalCompErrorPenalty=10.0,
+        timesLogicalCompErrorPenalty=10.0,
+        minusLogicalCompErrorPenalty=10.0,
+    )
+    """
 )
 
 
@@ -139,7 +163,7 @@ variable_names = [
 # np.array([0.0 for _ in range(len(X_torus))])), axis=0)
 y = np.array([1.0 for _ in range(len(X))])
 
-model = create_regressor_model(loss_func=loss, maxsize=35)
+model = create_regressor_model(loss_func=loss, maxsize=35, log_spec=logger_spec)
 model.fit(X, y, variable_names=variable_names)
 print(model.get_best().equation)
 # print(model.get_best().to_latex())
