@@ -29,6 +29,10 @@ def load_datafile(filename: str) -> np.ndarray:
     return dataset
 
 
+# TODO: Can simply ban certain compositions using nested constraints and remove the corresponding
+# tunable parameters from the loss function
+
+
 def create_regressor_model(
     log_spec: TensorBoardLoggerSpec,
     loss_func: Any,
