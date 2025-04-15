@@ -1,4 +1,40 @@
+import hashlib
+import os
 import re
+
+
+def get_lean_file_path(lean_code: str, directory: str) -> str:
+    """
+    Finds or creates a Lean file containing the given lean_code in the specified directory.
+
+    - If an existing file contains the code, return its path.
+    - Otherwise, create a new file with a unique name and return its path.
+    """
+
+    # Ensure the directory exists
+    directory_path = os.path.join(os.getcwd(), directory)
+    os.makedirs(directory_path, exist_ok=True)
+
+    # Check if any existing file contains the exact lean_code
+    for filename in os.listdir(directory_path):
+        if filename.endswith(".lean"):
+            file_path = os.path.join(directory_path, filename)
+            with open(file_path, "r") as f:
+                if f.read().strip() == lean_code.strip():
+                    return file_path  # Return the existing file path if match found
+
+    # Generate a unique file name based on a hash of the Lean code
+    hash_digest = hashlib.md5(lean_code.encode()).hexdigest()[:8]  # Shorten hash
+    new_file_path = os.path.join(
+        directory_path, f"conjecture_translation_{hash_digest}.lean"
+    )
+
+    # Write the Lean code to the new file
+    with open(new_file_path, "w") as f:
+        f.write(lean_code)
+
+    return new_file_path
+
 
 # Mapping of logical symbols to lean equivalents (we no longer simply replace implies/equals)
 logic_symbols = {
@@ -17,14 +53,14 @@ arithmetic_symbols = {
 # Mapping of linear algebra symbols to lean equivalents,
 # with a new entry for height_D1.
 linear_algebra_symbols = {
-    "width_D1": "finite_dimensional.finrank ℚ V1",
-    "height_D1": "finite_dimensional.finrank ℚ V0",  # Corrected replacement
-    "height_D2": "finite_dimensional.finrank ℚ V1",
-    "width_D2": "finite_dimensional.finrank ℚ V2",
-    "rank_D1": "finite_dimensional.finrank ℚ (linear_map.range D1)",
-    "rank_D2": "finite_dimensional.finrank ℚ (linear_map.range D2)",
-    "nullity_D1": "finite_dimensional.finrank ℚ (linear_map.ker D1)",
-    "nullity_D2": "finite_dimensional.finrank ℚ (linear_map.ker D2)",
+    "width_D1": "Module.finrank ℚ V1",
+    "height_D1": "Module.finrank ℚ V0",  # Corrected replacement
+    "height_D2": "Module.finrank ℚ V1",
+    "width_D2": "Module.finrank ℚ V2",
+    "rank_D1": "Module.finrank ℚ (LinearMap.range D1)",
+    "rank_D2": "Module.finrank ℚ (LinearMap.range D2)",
+    "nullity_D1": "Module.finrank ℚ (LinearMap.ker D1)",
+    "nullity_D2": "Module.finrank ℚ (LinearMap.ker D2)",
 }
 
 
@@ -113,13 +149,13 @@ def translate_to_lean(formula: str) -> str:
     vector_spaces = []
     linear_maps = []
     vector_spaces.append(
-        "(V0 : Type*) [add_comm_group V0] [module ℚ V0] [finite_dimensional ℚ V0]"
+        "(V0 : Type*) [AddCommGroup V0] [Module ℚ V0] [FiniteDimensional ℚ V0]"
     )
     vector_spaces.append(
-        "(V1 : Type*) [add_comm_group V1] [module ℚ V1] [finite_dimensional ℚ V1]"
+        "(V1 : Type*) [AddCommGroup V1] [Module ℚ V1] [FiniteDimensional ℚ V1]"
     )
     vector_spaces.append(
-        "(V2 : Type*) [add_comm_group V2] [module ℚ V2] [finite_dimensional ℚ V2]"
+        "(V2 : Type*) [AddCommGroup V2] [Module ℚ V2] [FiniteDimensional ℚ V2]"
     )
 
     if use_D1:
@@ -129,10 +165,10 @@ def translate_to_lean(formula: str) -> str:
         linear_maps.append("(D2 : V2 →ₗ[ℚ] V1)")
 
     lean_code = (
-        f"lemma linear_map_D1_D2_ℚ \n"
+        f"theorem linear_map_D1_D2_ℚ \n"
         f"{' '.join(vector_spaces)} \n"
         f"{' '.join(linear_maps)} : \n"
-        f"  {formula} := \n"
+        f"  {formula} := by \n"
         "  sorry"  # Placeholder for proof
     )
 
@@ -144,5 +180,12 @@ input_formula = (
     "implies(equals(_1, _0 + nullity_D2), equals((width_D1 + width_D1) + "
     "((_1 + nullity_D2) + (height_D1 + (height_D1 + height_D2))), nullity_D2 + nullity_D2))"
 )
-lean_output = translate_to_lean(input_formula)
-print(lean_output)
+# lean_output = translate_to_lean(input_formula)
+# print(lean_output)
+
+correct_formula = "implies(equals((nullity_D1 - rank_D2), _0), equals((height_D1 - width_D1 + width_D2), (nullity_D2 + height_D1 - rank_D1)))"
+lean_correct_formula = translate_to_lean(correct_formula)
+print(lean_correct_formula)
+# Test file and directory creation
+# file_path = get_lean_file_path(lean_output, "lean_files")
+# print(file_path)
