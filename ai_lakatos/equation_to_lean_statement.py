@@ -286,10 +286,11 @@ if __name__ == "__main__":
 (h_fixed2 : (Module.finrank R (LinearMap.range D2) : ℤ) + (Module.finrank R (LinearMap.ker D2) : ℤ) = (Module.finrank R V2 : ℤ))
     """
 
-    try:
-        lean_code = translate_fol_to_lean(fol_statement, definitions, fixed_premises, theorem_name="conjecture")
-        print("Translated Lean Code:")
-        print("---------------------")
-        print(lean_code)
-    except ValueError as e:
-        print("Error during parsing:", e)
+   
+     #  try:
+      #     lean_code = translate_fol_to_lean(fol_statement, definitions, fixed_premises, theorem_name="conjecture")
+        #   print("Translated Lean Code:")
+      #     print("---------------------")
+       #    print(lean_code)
+      #  except ValueError as e:
+     #     print("Error during parsing:", e)
