@@ -32,8 +32,8 @@ brew install poetry
 ### 2. Clone the repository
 
 ```bash
-git clone https://github.com/daattavya98/ai_lakatos.git
-cd ai_lakatos
+git clone https://github.com/daattavya98/surface_triangulations.git
+cd surface_triangulations
 ```
 
 ### 3. Install dependencies
@@ -145,3 +145,4 @@ surface_triangulations/
 ## License
 
 MIT
+
