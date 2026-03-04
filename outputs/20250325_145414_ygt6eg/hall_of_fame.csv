@@ -1,5 +1,0 @@
-Complexity,Loss,Equation
-2,59874.14,"logical_neg(_1)"
-3,0.000653392,"implies(nullity_D2, _1)"
-5,1.67017e-5,"implies(equals(height_D1, height_D1), nullity_D2)"
-7,2.6969172e-8,"implies(equals(width_D2, height_D2), equals(width_D2, _0))"

@@ -1,6 +1,0 @@
-Complexity,Loss,Equation
-2,59874.14,"logical_neg(_0)"
-3,2135.9497,"equals(width_D2, width_D1)"
-5,403.4288,"equals(width_D1, equals(height_D1, _1))"
-6,76.19785,"equals(logical_neg(equals(width_D2, _0)), _1)"
-7,4.81352,"equals(equals(_1, rank_D2), equals(rank_D2, nullity_D1))"

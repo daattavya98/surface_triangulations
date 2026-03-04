@@ -1,3 +1,0 @@
-Complexity,Loss,Equation
-5,Inf,"logical_neg(nullity_D2) * logical_neg(rank_D1)"
-6,-11.5,"logical_neg(_1) - (height_D2 - nullity_D1)"

@@ -1,3 +1,0 @@
-Complexity,Loss,Equation
-5,Inf,"logical_neg(logical_neg(width_D1 + width_D1))"
-7,-19.142857,"equals(width_D1, height_D2) - equals(rank_D2, nullity_D2)"

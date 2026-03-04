@@ -1,3 +1,0 @@
-Complexity,Loss,Equation
-1,1.01e-43,"_1"
-5,0.0,"implies(_1, equals(nullity_D1, rank_D2))"

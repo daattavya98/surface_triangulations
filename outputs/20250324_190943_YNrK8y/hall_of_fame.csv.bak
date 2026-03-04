@@ -1,3 +1,0 @@
-Complexity,Loss,Equation
-3,0.16666667,"equals(width_D2, rank_D1)"
-7,-0.14285715,"equals(width_D2, rank_D1 - equals(rank_D2, nullity_D2))"
