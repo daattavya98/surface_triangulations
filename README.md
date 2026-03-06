@@ -14,7 +14,7 @@ Each triangulation is constructed by sampling random points and computing a Dela
 
 ## Installation
 
-The project uses [Poetry](https://python-poetry.org/) for dependency management. You will need Python **3.10 or 3.11**.
+You will need Python **3.10 or 3.11**.
 
 ### 1. Install Poetry
 
@@ -47,7 +47,7 @@ This creates a virtual environment and installs all required packages.
 
 ### 4. Activate the environment
 
-Either prefix commands with `poetry run`, or activate the shell:
+Prefix commands with `poetry run`, or activate the shell:
 
 ```bash
 poetry shell
@@ -145,6 +145,7 @@ Some example datasets can be found in incidence_matrix_dataframes/
 ## License
 
 MIT
+
 
 
 
