@@ -1,13 +1,14 @@
 # Surface Triangulations
 
-A Python pipeline for generating random triangulations of closed 2-dimensional surfaces. The library produces combinatorial triangulations (represented as incidence matrices) for:
+A codebase for generating random triangulations of closed 2-dimensional surfaces. Provides support for:
 
 - **Spheres** (genus 0)
-- **Tori** (genus 1) and higher-genus orientable surfaces
-- **Klein bottles** and other non-orientable surfaces
+- **Tori** (genus 1)
+- **Klein bottles**
+- Arbitrary higher-genus surfaces (i.e. connected sum of previous)
 - **Disjoint unions** of the above (e.g. sphere + torus)
 
-Each triangulation is constructed by sampling random points on a fundamental polygon, computing a Delaunay triangulation, and then performing the appropriate edge identifications to obtain a valid simplicial complex. The pipeline also verifies that the resulting complex is a genuine surface by checking Betti numbers and the manifold link condition.
+Each triangulation is constructed by sampling random points and computing a Delaunay triangulation. The vertices and edges are then identified based on the surface being constructed. The pipeline verifies that the resulting complex is a genuine surface by checking the manifold link condition and computing Betti numbers.
 
 ---
 
@@ -23,7 +24,7 @@ If you don't have Poetry installed, the recommended way is via `pipx`:
 pipx install poetry
 ```
 
-Alternatively, on macOS you can use Homebrew:
+On macOS you can use Homebrew:
 
 ```bash
 brew install poetry
@@ -74,9 +75,7 @@ The function internally:
 1. Samples random points on two fundamental squares.
 2. Computes a Delaunay triangulation on each square.
 3. Identifies boundary edges to form a sphere.
-4. Verifies the result has the correct Betti numbers (b0 = 1, b1 = 0, b2 = 1).
-
-You can control the complexity of the triangulation by passing parameters:
+4. Verifies the result satisfies a manifold link condition and has correct Betti numbers (b0 = 1, b1 = 0, b2 = 1).
 
 ```python
 D1, D2 = generate_genus_0_datapoints(
@@ -145,4 +144,5 @@ surface_triangulations/
 ## License
 
 MIT
+
 
