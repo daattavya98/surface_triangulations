@@ -2,11 +2,11 @@
 
 A codebase for generating random triangulations of closed 2-dimensional surfaces. Provides support for:
 
-- **Spheres** (genus 0)
-- **Tori** (genus 1)
-- **Klein bottles**
+- Spheres (genus 0)
+- Tori (genus 1)
+- Klein bottles
 - Arbitrary higher-genus surfaces (i.e. connected sum of previous)
-- **Disjoint unions** of the above (e.g. sphere + torus)
+- Disjoint unions of the above (e.g. sphere + torus)
 
 Each triangulation is constructed by sampling random points and computing a Delaunay triangulation. The vertices and edges are then identified based on the surface being constructed. The pipeline verifies that the resulting complex is a genuine surface by checking the manifold link condition and computing Betti numbers.
 
@@ -138,11 +138,13 @@ surface_triangulations/
 ├── data_preprocessing.py        # Dataset validation and feature extraction
 └── tests/
 ```
+Some example datasets can be found in incidence_matrix_dataframes/
 
 ---
 
 ## License
 
 MIT
+
 
 
