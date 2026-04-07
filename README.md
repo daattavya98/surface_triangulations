@@ -18,7 +18,7 @@ You will need Python **3.10 or 3.11**.
 
 ### 1. Install Poetry
 
-If you don't have Poetry installed, the recommended way is via `pipx`:
+If you don't have Poetry installed, try `pipx`:
 
 ```bash
 pipx install poetry
